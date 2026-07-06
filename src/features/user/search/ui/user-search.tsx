@@ -2,13 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { buildUsersUrl } from "./users-query";
+import { cn } from "@/shared/lib/cn";
+import { Input } from "@/shared/ui";
+import { searchInputVariants } from "@/shared/ui/input/input.variants";
+import { buildUsersUrl } from "@/entities/user";
 
 type UserSearchProps = {
   defaultValue: string;
 };
 
-export default function UserSearch({ defaultValue }: UserSearchProps) {
+export function UserSearch({ defaultValue }: UserSearchProps) {
   const router = useRouter();
   const [value, setValue] = useState(defaultValue);
 
@@ -37,12 +40,12 @@ export default function UserSearch({ defaultValue }: UserSearchProps) {
   }, [value, defaultValue, router]);
 
   return (
-    <input
+    <Input
       type="search"
       placeholder="Search by name or email"
       value={value}
       onChange={(event) => setValue(event.target.value)}
-      className="userSearch"
+      className={cn(searchInputVariants(), "mb-3")}
       aria-label="Search users by name or email"
     />
   );

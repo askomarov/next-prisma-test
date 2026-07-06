@@ -21,9 +21,18 @@ Prisma setup is scaffolded automatically in:
 
 Database helper scripts are added to `package.json`:
 
-- `db:generate`
-- `db:push`
-- `db:migrate`
-- `db:seed`
+- `db:generate` — regenerate Prisma Client
+- `db:push` — sync schema without migrations (prototyping)
+- `db:migrate` — apply migrations in development
+- `db:reset` — drop DB, re-apply migrations, then run seed
+- `db:seed` — upsert demo users only (does not clear existing data)
+
+Reset the database (wipes all data):
+
+```bash
+pnpm db:reset
+```
+
+`db:seed` alone only upserts users via `upsert`; use `db:reset` for a clean slate.
 
 The starter page in `src/app/page.tsx` reads from a basic `User` model so you can verify queries quickly, and `prisma/seed.ts` inserts starter users.

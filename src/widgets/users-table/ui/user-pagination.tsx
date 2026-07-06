@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { buildUsersUrl } from "./users-query";
+import { buildUsersUrl } from "@/entities/user";
+import {
+  paginationDisabledVariants,
+  paginationInfoVariants,
+  paginationLinkVariants,
+  paginationVariants,
+} from "./user-pagination.variants";
 
 type UserPaginationProps = {
   page: number;
@@ -7,7 +13,7 @@ type UserPaginationProps = {
   search?: string;
 };
 
-export default function UserPagination({
+export function UserPagination({
   page,
   totalPages,
   search,
@@ -20,31 +26,31 @@ export default function UserPagination({
   const hasNext = page < totalPages;
 
   return (
-    <nav className="pagination" aria-label="Users pagination">
+    <nav className={paginationVariants()} aria-label="Users pagination">
       {hasPrev ? (
         <Link
-          className="paginationLink"
+          className={paginationLinkVariants()}
           href={buildUsersUrl({ page: page - 1, search })}
         >
           ← Back
         </Link>
       ) : (
-        <span className="paginationDisabled">← Back</span>
+        <span className={paginationDisabledVariants()}>← Back</span>
       )}
 
-      <span className="paginationInfo">
+      <span className={paginationInfoVariants()}>
         {page} / {totalPages}
       </span>
 
       {hasNext ? (
         <Link
-          className="paginationLink"
+          className={paginationLinkVariants()}
           href={buildUsersUrl({ page: page + 1, search })}
         >
           Forward →
         </Link>
       ) : (
-        <span className="paginationDisabled">Forward →</span>
+        <span className={paginationDisabledVariants()}>Forward →</span>
       )}
     </nav>
   );

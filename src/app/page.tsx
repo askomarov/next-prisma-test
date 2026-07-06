@@ -1,6 +1,8 @@
-import CreateUserForm from "./create-user-form";
-import CreateUserRhfForm from "./create-user-rhf-form";
-import UsersTable from "./users-table";
+import { CreateUserDialog } from "@/features/user/create";
+import { PageHero, PageShell } from "@/shared/ui/page-shell";
+import { UsersTable } from "@/widgets/users-table";
+import { canCreateUsers } from "@/src/lib/auth/guards";
+import { getSession } from "@/src/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -12,33 +14,29 @@ export default async function Home({ searchParams }: HomeProps) {
   const { page: pageParam, search: searchParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const search = searchParam ?? "";
+  const session = await getSession();
+  const showCreateForms = session ? canCreateUsers(session.role) : false;
 
   return (
-    <main className="shell">
-      <div className="hero">
-        <p className="eyebrow">Next.js + Prisma 7</p>
-        <h1>Users from your database, loaded on the server.</h1>
-        <p className="lede">
-          This page reads from <code>src/app/page.tsx</code> using the Prisma
-          instance in <code>src/lib/prisma.ts</code>.
-        </p>
-      </div>
+    <PageShell>
+      <PageHero
+        eyebrow="Next.js + Prisma 7"
+        title="Users from your database, loaded on the server."
+        lede={
+          <>
+            This page reads from <code>src/app/page.tsx</code> using the Prisma
+            instance in <code>src/lib/prisma.ts</code>.
+          </>
+        }
+      />
 
-      <section className="panel mb-4">
-        <div className="panelHeader">
-          <h2>Server Action form</h2>
+      {showCreateForms ? (
+        <div className="mb-4">
+          <CreateUserDialog />
         </div>
-        <CreateUserForm />
-      </section>
-
-      <section className="panel mb-4">
-        <div className="panelHeader">
-          <h2>react-hook-form + zod</h2>
-        </div>
-        <CreateUserRhfForm />
-      </section>
+      ) : null}
 
       <UsersTable page={page} search={search} />
-    </main>
+    </PageShell>
   );
 }
