@@ -3,6 +3,7 @@
 import { prisma } from "@/src/lib/prisma";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
 import { revalidatePath } from "next/cache";
+import { revalidateFinancePaths } from "@/shared/lib/revalidate-finance";
 import {
   transactionSchema,
   type TransactionField,
@@ -28,7 +29,28 @@ async function saveTransaction(
     };
   }
 
-  const { kind, moneyType, amount, description, occurredAt } = parsed.data;
+  const { walletId, categoryId, kind, moneyType, amount, description, occurredAt } =
+    parsed.data;
+
+  const wallet = await prisma.wallet.findFirst({
+    where: { id: walletId, userId },
+    select: { id: true },
+  });
+
+  if (!wallet) {
+    return { error: "Кошелёк не найден", field: "walletId" };
+  }
+
+  if (categoryId) {
+    const category = await prisma.category.findFirst({
+      where: { id: categoryId, userId, kind },
+      select: { id: true },
+    });
+
+    if (!category) {
+      return { error: "Категория не найдена", field: "categoryId" };
+    }
+  }
 
   try {
     if (transactionId) {
@@ -44,6 +66,8 @@ async function saveTransaction(
       await prisma.transaction.update({
         where: { id: transactionId },
         data: {
+          walletId,
+          categoryId: categoryId || null,
           kind,
           moneyType,
           amount,
@@ -55,6 +79,8 @@ async function saveTransaction(
       await prisma.transaction.create({
         data: {
           userId,
+          walletId,
+          categoryId: categoryId || null,
           kind,
           moneyType,
           amount,
@@ -67,7 +93,7 @@ async function saveTransaction(
     return { error: "Не удалось сохранить операцию" };
   }
 
-  revalidatePath("/finance");
+  revalidateFinancePaths(revalidatePath);
   return { success: true };
 }
 

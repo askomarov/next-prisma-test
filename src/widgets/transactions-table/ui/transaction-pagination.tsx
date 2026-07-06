@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { TransactionFilters } from "@/entities/transaction";
 import { buildTransactionsUrl } from "@/entities/transaction";
 import {
   paginationDisabledVariants,
@@ -10,11 +11,13 @@ import {
 type TransactionPaginationProps = {
   page: number;
   totalPages: number;
+  filters?: TransactionFilters;
 };
 
 export function TransactionPagination({
   page,
   totalPages,
+  filters = {},
 }: TransactionPaginationProps) {
   if (totalPages <= 1) {
     return null;
@@ -28,7 +31,7 @@ export function TransactionPagination({
       {hasPrev ? (
         <Link
           className={paginationLinkVariants()}
-          href={buildTransactionsUrl({ page: page - 1 })}
+          href={buildTransactionsUrl({ page: page - 1, ...filters })}
         >
           ← Назад
         </Link>
@@ -43,7 +46,7 @@ export function TransactionPagination({
       {hasNext ? (
         <Link
           className={paginationLinkVariants()}
-          href={buildTransactionsUrl({ page: page + 1 })}
+          href={buildTransactionsUrl({ page: page + 1, ...filters })}
         >
           Вперёд →
         </Link>

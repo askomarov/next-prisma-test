@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const transactionSchema = z.object({
+  walletId: z.string().min(1, "Выберите кошелёк"),
   kind: z.enum(["INCOME", "EXPENSE"]),
   moneyType: z.enum(["REAL", "VIRTUAL"]),
   amount: z
@@ -14,6 +15,10 @@ export const transactionSchema = z.object({
     .optional()
     .or(z.literal("")),
   occurredAt: z.date({ message: "Укажите дату" }),
+  categoryId: z
+    .string()
+    .optional()
+    .or(z.literal("")),
 });
 
 export type TransactionInput = z.infer<typeof transactionSchema>;

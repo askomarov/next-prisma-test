@@ -25,6 +25,12 @@ export function AuthBar({ session }: AuthBarProps) {
         <Link href="/finance" className={authBarLinkVariants()}>
           Finance
         </Link>
+        <Link href="/finance/transactions" className={authBarLinkVariants()}>
+          Transactions
+        </Link>
+        <Link href="/finance/categories" className={authBarLinkVariants()}>
+          Categories
+        </Link>
         <span className={authBarEmailVariants()}>{session.email}</span>
         <span className={roleBadgeVariants()}>{session.role}</span>
         <form action={logout}>

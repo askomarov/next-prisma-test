@@ -1,5 +1,7 @@
 import { cva } from "class-variance-authority";
 
+export const transactionsToolbarVariants = cva("mb-3 grid gap-3");
+
 export const transactionsListVariants = cva("m-0 grid list-none gap-2 p-0");
 
 export const transactionItemVariants = cva(

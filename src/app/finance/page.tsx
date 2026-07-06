@@ -1,33 +1,38 @@
-import { TransactionForm } from "@/features/transaction";
+import Link from "next/link";
+import { getUserWalletList } from "@/entities/wallet/server";
 import { Panel } from "@/shared/ui/panel";
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
-import { TransactionsTable } from "@/widgets/transactions-table";
+import { requireAuthUserId } from "@/src/lib/auth/guards";
+import { WalletsPanel } from "@/widgets/wallets-panel";
 
 export const dynamic = "force-dynamic";
 
-type FinancePageProps = {
-  searchParams: Promise<{ page?: string }>;
-};
-
-export default async function FinancePage({ searchParams }: FinancePageProps) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam) || 1);
+export default async function FinancePage() {
+  const { userId } = await requireAuthUserId();
+  const wallets = await getUserWalletList(userId);
 
   return (
     <PageShell>
       <PageHero
         eyebrow="Финансы"
-        title="Учёт расходов и приходов"
-        lede="Записывайте операции с реальными и виртуальными деньгами."
+        title="Кошельки"
+        lede="Управляйте кошельками в разных валютах."
       />
 
       <div className="mb-4">
-        <Panel title="Новая запись">
-          <TransactionForm />
-        </Panel>
+        <WalletsPanel wallets={wallets} />
       </div>
 
-      <TransactionsTable page={page} />
+      <Panel title="Разделы">
+        <div className="grid gap-2 text-sm">
+          <Link href="/finance/transactions" className="underline">
+            Операции
+          </Link>
+          <Link href="/finance/categories" className="underline">
+            Категории
+          </Link>
+        </div>
+      </Panel>
     </PageShell>
   );
 }

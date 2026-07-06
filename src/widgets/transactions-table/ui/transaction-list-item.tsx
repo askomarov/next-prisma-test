@@ -1,5 +1,8 @@
 "use client";
 
+import type { CategoryOption } from "@/entities/category";
+import type { WalletOption } from "@/entities/wallet";
+import { formatMoney } from "@/entities/wallet";
 import {
   MONEY_TYPE_LABELS,
   TRANSACTION_KIND_LABELS,
@@ -18,17 +21,9 @@ import {
 
 type TransactionListItemProps = {
   transaction: EditableTransaction;
+  wallets: WalletOption[];
+  categories: CategoryOption[];
 };
-
-function formatAmount(amount: string, kind: "INCOME" | "EXPENSE") {
-  const value = Number(amount);
-  const formatted = new Intl.NumberFormat("ru-RU", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-
-  return kind === "INCOME" ? `+${formatted}` : `−${formatted}`;
-}
 
 function formatDate(isoDate: string) {
   return new Intl.DateTimeFormat("ru-RU", {
@@ -36,7 +31,11 @@ function formatDate(isoDate: string) {
   }).format(new Date(isoDate));
 }
 
-export function TransactionListItem({ transaction }: TransactionListItemProps) {
+export function TransactionListItem({
+  transaction,
+  wallets,
+  categories,
+}: TransactionListItemProps) {
   return (
     <li className={transactionItemVariants()}>
       <div>
@@ -46,6 +45,14 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
           <span className="text-sm">
             {MONEY_TYPE_LABELS[transaction.moneyType]}
           </span>
+          <span className="text-xs text-neutral-400">·</span>
+          <span className="text-sm">{transaction.walletName}</span>
+          {transaction.categoryName ? (
+            <>
+              <span className="text-xs text-neutral-400">·</span>
+              <span className="text-sm">{transaction.categoryName}</span>
+            </>
+          ) : null}
         </div>
         {transaction.description ? (
           <p className={transactionMetaVariants()}>{transaction.description}</p>
@@ -58,7 +65,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
               kind: transaction.kind,
             })}
           >
-            {formatAmount(transaction.amount, transaction.kind)} ₽
+            {formatMoney(
+              transaction.amount,
+              transaction.walletCurrency,
+              transaction.kind,
+            )}
           </span>
           <time
             className={transactionDateVariants()}
@@ -67,7 +78,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
             {formatDate(transaction.occurredAt)}
           </time>
         </div>
-        <EditTransactionDialog transaction={transaction} />
+        <EditTransactionDialog
+          transaction={transaction}
+          wallets={wallets}
+          categories={categories}
+        />
       </div>
     </li>
   );
