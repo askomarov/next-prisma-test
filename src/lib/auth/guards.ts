@@ -26,7 +26,14 @@ export async function requireRole(...roles: Role[]): Promise<SessionUser> {
 
 async function resolveAuthUserId(session: SessionUser): Promise<string> {
   if (session.userId) {
-    return session.userId;
+    const userById = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { id: true },
+    });
+
+    if (userById) {
+      return userById.id;
+    }
   }
 
   const user = await prisma.user.findUnique({
