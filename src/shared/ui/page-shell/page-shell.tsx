@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/shared/lib/utils";
 import {
   pageEyebrowVariants,
@@ -8,19 +8,20 @@ import {
   pageTitleVariants,
 } from "./page-shell.variants";
 
-type PageShellProps = {
-  children: ReactNode;
-  className?: string;
-};
+type PageShellProps = ComponentProps<"main">;
 
-export function PageShell({ children, className }: PageShellProps) {
-  return <main className={cn(pageShellVariants(), className)}>{children}</main>;
+export function PageShell({ children, className, ...props }: PageShellProps) {
+  return (
+    <main className={cn(pageShellVariants(), className)} {...props}>
+      {children}
+    </main>
+  );
 }
 
 type PageHeroProps = {
   eyebrow: string;
   title: string;
-  lede?: ReactNode;
+  lede?: ComponentProps<"p">["children"];
   className?: string;
 };
 
