@@ -2,9 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { cn } from "@/shared/lib/utils";
-import { Input } from "@/shared/ui/button";
-import { searchInputVariants } from "@/shared/ui/input/input.variants";
+import { Input } from "@/shared/ui/input";
 import { buildUsersUrl } from "@/entities/user";
 
 type UserSearchProps = {
@@ -45,7 +43,7 @@ export function UserSearch({ defaultValue }: UserSearchProps) {
       placeholder="Search by name or email"
       value={value}
       onChange={(event) => setValue(event.target.value)}
-      className={cn(searchInputVariants(), "mb-3")}
+      className="mb-3"
       aria-label="Search users by name or email"
     />
   );

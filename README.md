@@ -22,17 +22,60 @@ Prisma setup is scaffolded automatically in:
 Database helper scripts are added to `package.json`:
 
 - `db:generate` — regenerate Prisma Client
-- `db:push` — sync schema without migrations (prototyping)
-- `db:migrate` — apply migrations in development
+- `db:push` — sync `prisma/schema.prisma` to the database without creating migrations
+- `db:migrate` — create/apply development migrations
 - `db:reset` — drop DB, re-apply migrations, then run seed
-- `db:seed` — upsert demo users only (does not clear existing data)
+- `db:seed` — insert/update demo data only
 
-Reset the database (wipes all data):
+### Usual database workflow
+
+After changing `prisma/schema.prisma`, use migrations:
+
+```bash
+pnpm db:migrate
+pnpm db:generate
+```
+
+When Prisma asks for a migration name, use a short name like:
+
+```bash
+add_wallets_and_categories
+```
+
+This creates a new folder in `prisma/migrations/`. Commit that migration file with the code.
+
+For quick local/dev sync without migrations:
+
+```bash
+pnpm db:push
+pnpm db:generate
+```
+
+If the database is disposable and you want to rebuild all tables from scratch:
 
 ```bash
 pnpm db:reset
+pnpm db:generate
 ```
 
-`db:seed` alone only upserts users via `upsert`; use `db:reset` for a clean slate.
+Warning: `db:reset` deletes all data in the database from `DATABASE_URL`. Do not run it against production data.
+
+If `db:reset` fails during seed with an error like `The table public.Category does not exist`, the migration history is older than `schema.prisma`. Fix it by creating/applying a migration first:
+
+```bash
+pnpm db:migrate
+pnpm db:generate
+pnpm db:seed
+```
+
+For a throwaway dev database, you can also force-sync the current schema and then seed:
+
+```bash
+pnpm db:push -- --force-reset
+pnpm db:generate
+pnpm db:seed
+```
+
+`db:seed` alone does not recreate tables. It only inserts/updates demo data.
 
 The starter page in `src/app/page.tsx` reads from a basic `User` model so you can verify queries quickly, and `prisma/seed.ts` inserts starter users.
