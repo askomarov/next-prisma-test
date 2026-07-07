@@ -28,6 +28,9 @@ export default async function FinancePage() {
           <Link href="/finance/transactions" className="underline">
             Операции
           </Link>
+          <Link href="/finance/stats" className="underline">
+            Статистика
+          </Link>
           <Link href="/finance/categories" className="underline">
             Категории
           </Link>

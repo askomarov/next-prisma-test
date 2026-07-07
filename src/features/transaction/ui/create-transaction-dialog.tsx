@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import {
   TransactionForm,

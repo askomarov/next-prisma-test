@@ -4,7 +4,13 @@ import { createContext, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { TRANSACTION_KIND_LABELS } from "@/entities/transaction";
-import { Button, FormError, FormField, Input, Select } from "@/shared/ui";
+import {
+  Button,
+  FormError,
+  FormField,
+  Input,
+  Select,
+} from "@/shared/ui/button";
 import { createCategory, updateCategory } from "../api/actions";
 import {
   categorySchema,

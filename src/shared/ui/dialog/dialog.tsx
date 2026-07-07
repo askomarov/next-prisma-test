@@ -9,7 +9,7 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/lib/utils";
 import {
   dialogCloseVariants,
   dialogHeaderVariants,
@@ -26,12 +26,7 @@ type DialogProps = {
   className?: string;
 };
 
-export function Dialog({
-  trigger,
-  title,
-  children,
-  className,
-}: DialogProps) {
+export function Dialog({ trigger, title, children, className }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const onClose = useContext(DialogOnCloseContext);
 

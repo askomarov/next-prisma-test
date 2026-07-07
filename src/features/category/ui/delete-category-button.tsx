@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import type { CategoryListItem } from "@/entities/category";
-import { Button } from "@/shared/ui";
+import { DeleteButton } from "@/shared/ui/delete-button";
 import { deleteCategory } from "../api/actions";
 
 type DeleteCategoryButtonProps = {
@@ -33,23 +33,15 @@ export function DeleteCategoryButton({ category }: DeleteCategoryButtonProps) {
   };
 
   return (
-    <div className="flex flex-col items-end gap-1">
-      <Button
-        type="button"
-        className="w-auto"
-        loading={isPending}
-        loadingText="Удаление..."
-        onClick={handleDelete}
-        disabled={category.transactionCount > 0}
-      >
-        Удалить
-      </Button>
-      {category.transactionCount > 0 ? (
-        <span className="text-xs text-neutral-400">
-          Есть операции ({category.transactionCount})
-        </span>
-      ) : null}
-      {error ? <span className="text-xs text-red-600">{error}</span> : null}
-    </div>
+    <DeleteButton
+      onDelete={handleDelete}
+      isPending={isPending}
+      error={error}
+      blockedHint={
+        category.transactionCount > 0
+          ? `Есть операции (${category.transactionCount})`
+          : undefined
+      }
+    />
   );
 }

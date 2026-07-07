@@ -1,7 +1,8 @@
+import { redirect } from "next/navigation";
 import { CreateUserDialog } from "@/features/user/create";
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
 import { UsersTable } from "@/widgets/users-table";
-import { canCreateUsers } from "@/src/lib/auth/guards";
+import { canCreateUsers, canViewUsers } from "@/src/lib/auth/guards";
 import { getSession } from "@/src/lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,12 @@ export default async function Home({ searchParams }: HomeProps) {
   const page = Math.max(1, Number(pageParam) || 1);
   const search = searchParam ?? "";
   const session = await getSession();
-  const showCreateForms = session ? canCreateUsers(session.role) : false;
+
+  if (!session || !canViewUsers(session.role)) {
+    redirect("/finance");
+  }
+
+  const showCreateForms = canCreateUsers(session.role);
 
   return (
     <PageShell>

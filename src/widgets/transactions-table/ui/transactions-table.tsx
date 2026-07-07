@@ -19,6 +19,7 @@ type TransactionsTableProps = {
   filters?: TransactionFilters;
   wallets?: WalletOption[];
   categories?: CategoryOption[];
+  toolbar?: boolean;
 };
 
 function toEditableTransaction(
@@ -44,6 +45,7 @@ export async function TransactionsTable({
   filters = {},
   wallets: initialWallets,
   categories: initialCategories,
+  toolbar = true,
 }: TransactionsTableProps) {
   const { userId } = await requireAuthUserId();
   const { getUserWalletOptions } = await import("@/entities/wallet/server");
@@ -74,11 +76,13 @@ export async function TransactionsTable({
         </>
       }
     >
-      <TransactionsTableToolbar
-        wallets={wallets}
-        categories={categories}
-        filters={filters}
-      />
+      {toolbar ? (
+        <TransactionsTableToolbar
+          wallets={wallets}
+          categories={categories}
+          filters={filters}
+        />
+      ) : null}
 
       {!transactions ? (
         <EmptyState>

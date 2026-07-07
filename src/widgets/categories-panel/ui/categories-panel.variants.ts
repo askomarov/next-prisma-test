@@ -10,6 +10,3 @@ export const categoryActionsVariants = cva(
   "flex flex-wrap items-center gap-2 max-sm:w-full",
 );
 
-export const categoryKindVariants = cva(
-  "rounded-full border border-neutral-200 bg-neutral-50 px-2 py-0.5 text-xs font-medium",
-);

@@ -8,6 +8,8 @@ type TransactionsQueryParams = {
   moneyType?: MoneyType;
   walletId?: string;
   categoryId?: string;
+  from?: string;
+  to?: string;
 };
 
 export function buildTransactionsUrl({
@@ -16,6 +18,8 @@ export function buildTransactionsUrl({
   moneyType,
   walletId,
   categoryId,
+  from,
+  to,
 }: TransactionsQueryParams) {
   const params = new URLSearchParams();
 
@@ -33,6 +37,14 @@ export function buildTransactionsUrl({
 
   if (categoryId) {
     params.set("categoryId", categoryId);
+  }
+
+  if (from) {
+    params.set("from", from);
+  }
+
+  if (to) {
+    params.set("to", to);
   }
 
   if (page && page > 1) {

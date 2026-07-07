@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/src/lib/auth/jwt";
+import { canViewUsers, getHomePathForRole } from "@/src/lib/auth/roles";
+import type { Role } from "@/src/lib/auth/types";
 
 const PUBLIC_PATHS = ["/login"];
+
+function getHomePath(role: Role): string {
+  return getHomePathForRole(role);
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -13,7 +19,9 @@ export async function proxy(request: NextRequest) {
 
   if (isPublicPath) {
     if (session && pathname === "/login") {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(
+        new URL(getHomePath(session.role), request.url),
+      );
     }
 
     return NextResponse.next();
@@ -23,6 +31,10 @@ export async function proxy(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (pathname === "/" && !canViewUsers(session.role)) {
+    return NextResponse.redirect(new URL("/finance", request.url));
   }
 
   return NextResponse.next();

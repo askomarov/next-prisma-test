@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button, FormError, Input } from "@/shared/ui";
+import { Button, FormError, Input } from "@/shared/ui/button";
 import { login } from "../api/actions";
 import { loginFormVariants } from "./login-form.variants";
 

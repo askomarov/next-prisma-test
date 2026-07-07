@@ -2,9 +2,10 @@
 
 import type { WalletListItem } from "@/entities/wallet";
 import { CURRENCY_LABELS, isSupportedCurrency } from "@/entities/wallet";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
 import { WalletForm, WalletFormSuccessContext } from "./wallet-form";
+import { PenSquareIcon } from "lucide-react";
 
 type EditWalletDialogProps = {
   wallet: WalletListItem;
@@ -19,7 +20,7 @@ export function EditWalletDialog({ wallet }: EditWalletDialogProps) {
     <Dialog
       trigger={
         <Button type="button" className="w-auto">
-          Изменить
+          <PenSquareIcon />
         </Button>
       }
       title="Редактировать кошелёк"

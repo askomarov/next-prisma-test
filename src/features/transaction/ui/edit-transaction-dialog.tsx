@@ -3,13 +3,14 @@
 import type { MoneyType, TransactionKind } from "@/src/generated/prisma/client";
 import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
 import {
   TransactionForm,
   TransactionFormSuccessContext,
   type TransactionFormValues,
 } from "./transaction-form";
+import { PenSquareIcon } from "lucide-react";
 
 export type EditableTransaction = {
   id: string;
@@ -52,7 +53,7 @@ export function EditTransactionDialog({
     <Dialog
       trigger={
         <Button type="button" className="w-auto">
-          Изменить
+          <PenSquareIcon />
         </Button>
       }
       title="Редактировать операцию"

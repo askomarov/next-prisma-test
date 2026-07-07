@@ -4,6 +4,8 @@ import { prisma } from "@/src/lib/prisma";
 import { getSession } from "./session";
 import type { Role, SessionUser } from "./types";
 
+export { canCreateUsers, canViewUsers, getHomePathForRole } from "./roles";
+
 export async function requireAuth(): Promise<SessionUser> {
   const session = await getSession();
 
@@ -56,8 +58,4 @@ export async function requireAuthUserId(): Promise<{
   const userId = await resolveAuthUserId(session);
 
   return { session, userId };
-}
-
-export function canCreateUsers(role: Role): boolean {
-  return role === "ADMIN" || role === "SUPER_ADMIN";
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import { CategoryForm, CategoryFormSuccessContext } from "./category-form";
 

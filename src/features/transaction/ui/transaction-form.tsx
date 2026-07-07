@@ -10,7 +10,13 @@ import {
   MONEY_TYPE_LABELS,
   TRANSACTION_KIND_LABELS,
 } from "@/entities/transaction";
-import { Button, FormError, FormField, Input, Select } from "@/shared/ui";
+import {
+  Button,
+  FormError,
+  FormField,
+  Input,
+  Select,
+} from "@/shared/ui/button";
 import { createTransaction, updateTransaction } from "../api/actions";
 import { transactionSchema, type TransactionInput } from "../model/schema";
 import { transactionFormVariants } from "./transaction-form.variants";
@@ -90,7 +96,9 @@ export function TransactionForm({
   useEffect(() => {
     if (
       selectedCategoryId &&
-      !availableCategories.some((category) => category.id === selectedCategoryId)
+      !availableCategories.some(
+        (category) => category.id === selectedCategoryId,
+      )
     ) {
       setValue("categoryId", "");
     }

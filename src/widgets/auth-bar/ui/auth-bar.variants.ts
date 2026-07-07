@@ -5,7 +5,7 @@ export const authBarVariants = cva(
 );
 
 export const authBarInnerVariants = cva(
-  "mx-auto flex max-w-[40rem] flex-wrap items-center gap-3 px-6 py-3",
+  "mx-auto flex container flex-wrap items-center gap-3 py-3",
 );
 
 export const authBarLinkVariants = cva(

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/src/lib/prisma";
 import { hashPassword, verifyPassword } from "@/src/lib/auth/password";
+import { getHomePathForRole } from "@/src/lib/auth/roles";
 import { createSession, destroySession } from "@/src/lib/auth/session";
 import { loginSchema } from "../model/schema";
 import { redirect } from "next/navigation";
@@ -56,7 +57,7 @@ export async function login(
       email: normalizedEmail,
       role: "SUPER_ADMIN",
     });
-    redirect("/");
+    redirect(getHomePathForRole("SUPER_ADMIN"));
   }
 
   const user = await prisma.user.findUnique({
@@ -73,7 +74,7 @@ export async function login(
     role: user.role,
   });
 
-  redirect("/");
+  redirect(getHomePathForRole(user.role));
 }
 
 export async function logout(): Promise<void> {

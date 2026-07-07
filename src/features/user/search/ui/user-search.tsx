@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { cn } from "@/shared/lib/cn";
-import { Input } from "@/shared/ui";
+import { cn } from "@/shared/lib/utils";
+import { Input } from "@/shared/ui/button";
 import { searchInputVariants } from "@/shared/ui/input/input.variants";
 import { buildUsersUrl } from "@/entities/user";
 

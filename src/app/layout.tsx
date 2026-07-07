@@ -2,6 +2,18 @@ import type { Metadata } from "next";
 import { AuthBar } from "@/widgets/auth-bar";
 import { getSession } from "@/src/lib/auth/session";
 import "./globals.css";
+import { IBM_Plex_Sans, Noto_Sans } from "next/font/google";
+import { cn } from "@/shared/lib/utils";
+
+const notoSansHeading = Noto_Sans({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "next-prisma",
@@ -16,7 +28,14 @@ export default async function RootLayout({
   const session = await getSession();
 
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={cn(
+        "font-sans",
+        ibmPlexSans.variable,
+        notoSansHeading.variable,
+      )}
+    >
       <body>
         {session ? <AuthBar session={session} /> : null}
         {children}

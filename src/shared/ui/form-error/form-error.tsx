@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/lib/utils";
 import { formErrorVariants } from "./form-error.variants";
 
 type FormErrorProps = {

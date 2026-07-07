@@ -2,9 +2,10 @@
 
 import type { CategoryListItem } from "@/entities/category";
 import { TRANSACTION_KIND_LABELS } from "@/entities/transaction";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
 import { CategoryForm, CategoryFormSuccessContext } from "./category-form";
+import { PenSquareIcon } from "lucide-react";
 
 type EditCategoryDialogProps = {
   category: CategoryListItem;
@@ -15,7 +16,7 @@ export function EditCategoryDialog({ category }: EditCategoryDialogProps) {
     <Dialog
       trigger={
         <Button type="button" className="w-auto">
-          Изменить
+          <PenSquareIcon />
         </Button>
       }
       title="Редактировать категорию"

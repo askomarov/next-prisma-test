@@ -1,12 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/shared/ui";
+import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
-import {
-  CreateUserForm,
-  CreateUserSuccessContext,
-} from "./create-user-form";
+import { CreateUserForm, CreateUserSuccessContext } from "./create-user-form";
 
 export function CreateUserDialog() {
   const [formKey, setFormKey] = useState(0);

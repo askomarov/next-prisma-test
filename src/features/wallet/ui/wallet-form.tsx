@@ -4,7 +4,13 @@ import { createContext, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CURRENCY_LABELS } from "@/entities/wallet";
-import { Button, FormError, FormField, Input, Select } from "@/shared/ui";
+import {
+  Button,
+  FormError,
+  FormField,
+  Input,
+  Select,
+} from "@/shared/ui/button";
 import { createWallet, updateWallet } from "../api/actions";
 import {
   walletSchema,
@@ -98,7 +104,9 @@ export function WalletForm({
           <Input type="text" value={currencyLabel} readOnly disabled />
         </FormField>
       ) : (
-        <FormField error={"currency" in errors ? errors.currency?.message : undefined}>
+        <FormField
+          error={"currency" in errors ? errors.currency?.message : undefined}
+        >
           <Select
             error={Boolean("currency" in errors && errors.currency)}
             {...register("currency", {

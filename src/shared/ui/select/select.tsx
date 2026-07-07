@@ -1,5 +1,5 @@
 import { forwardRef, type SelectHTMLAttributes } from "react";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/shared/lib/utils";
 import { selectVariants } from "./select.variants";
 
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {

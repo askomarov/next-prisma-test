@@ -8,6 +8,8 @@ import {
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
 import { TransactionsTable } from "@/widgets/transactions-table";
+import { CreateTransactionDialog } from "@/features/transaction";
+import { TransactionFilters as TransactionFiltersForm } from "@/features/transaction/filter";
 
 export const dynamic = "force-dynamic";
 
@@ -18,13 +20,15 @@ type TransactionsPageProps = {
     moneyType?: string;
     walletId?: string;
     categoryId?: string;
+    from?: string;
+    to?: string;
   }>;
 };
 
 export default async function TransactionsPage({
   searchParams,
 }: TransactionsPageProps) {
-  const { page: pageParam, kind, moneyType, walletId, categoryId } =
+  const { page: pageParam, kind, moneyType, walletId, categoryId, from, to } =
     await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const filters: TransactionFilters = {
@@ -32,6 +36,8 @@ export default async function TransactionsPage({
     moneyType: parseMoneyType(moneyType),
     walletId: walletId || undefined,
     categoryId: categoryId || undefined,
+    from: from || undefined,
+    to: to || undefined,
   };
 
   const { userId } = await requireAuthUserId();
@@ -54,11 +60,26 @@ export default async function TransactionsPage({
         lede="Список приходов и расходов с фильтрами по типу, деньгам, кошельку и категории."
       />
 
+      <div className="mb-4 grid gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <CreateTransactionDialog
+            wallets={walletOptions}
+            categories={categories}
+          />
+        </div>
+        <TransactionFiltersForm
+          filters={filters}
+          wallets={walletOptions}
+          categories={categories}
+        />
+      </div>
+
       <TransactionsTable
         page={page}
         filters={filters}
         wallets={walletOptions}
         categories={categories}
+        toolbar={false}
       />
     </PageShell>
   );
