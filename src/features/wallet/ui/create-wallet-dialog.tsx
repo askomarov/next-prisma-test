@@ -1,11 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import { WalletForm, WalletFormSuccessContext } from "./wallet-form";
 
 export function CreateWalletDialog() {
+  const router = useRouter();
   const [formKey, setFormKey] = useState(0);
   const resetForm = () => setFormKey((key) => key + 1);
 
@@ -24,6 +26,7 @@ export function CreateWalletDialog() {
             value={() => {
               close();
               resetForm();
+              router.refresh();
             }}
           >
             <WalletForm key={formKey} />

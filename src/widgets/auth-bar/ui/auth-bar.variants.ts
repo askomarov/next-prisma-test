@@ -5,19 +5,25 @@ export const authBarVariants = cva(
 );
 
 export const authBarInnerVariants = cva(
-  "mx-auto flex container flex-wrap items-center gap-3 py-3",
+  "mx-auto flex container items-center gap-3 py-3",
+);
+
+export const authBarDesktopNavVariants = cva(
+  "hidden items-center gap-3 sm:flex",
 );
 
 export const authBarLinkVariants = cva(
   "text-sm text-neutral-900 no-underline hover:underline",
 );
 
-export const authBarEmailVariants = cva("text-sm");
-
-export const roleBadgeVariants = cva(
-  "rounded-full border border-neutral-300 bg-white px-2 py-0.5 text-xs font-semibold tracking-wide uppercase",
+export const logoutButtonVariants = cva(
+  "hidden cursor-pointer rounded-md border border-neutral-200 bg-white px-3 py-1.5 font-[inherit] text-sm hover:bg-neutral-100 sm:ml-auto sm:block",
 );
 
-export const logoutButtonVariants = cva(
-  "ml-auto cursor-pointer rounded-md border border-neutral-200 bg-white px-3 py-1.5 font-[inherit] text-sm hover:bg-neutral-100",
+export const authBarMobileMenuNavVariants = cva("grid gap-4");
+
+export const authBarMobileMenuLinksVariants = cva("grid gap-1");
+
+export const authBarMobileMenuActionsVariants = cva(
+  "grid gap-2 border-t border-neutral-200 pt-4 [&_[data-slot=button]]:w-full",
 );
