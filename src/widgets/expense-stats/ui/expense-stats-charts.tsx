@@ -14,6 +14,7 @@ import {
 
 import type { TransactionCurrencyStats } from "@/entities/transaction";
 import { formatMoney } from "@/entities/wallet";
+import { EmptyState } from "@/shared/ui/panel";
 import {
   Card,
   CardContent,
@@ -272,6 +273,10 @@ export function TransactionKindCharts({
   kind,
   stats,
 }: TransactionKindChartsProps) {
+  if (stats.length === 0) {
+    return <EmptyState className="text-center">нет записей</EmptyState>;
+  }
+
   return (
     <div className={expenseStatsSectionVariants()}>
       {stats.map((currencyStats) => (

@@ -11,12 +11,6 @@ import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
 import { cn } from "@/shared/lib/utils";
 import type { AuthBarNavItem } from "../lib/auth-bar-nav";
-import {
-  authBarLinkVariants,
-  authBarMobileMenuActionsVariants,
-  authBarMobileMenuLinksVariants,
-  authBarMobileMenuNavVariants,
-} from "./auth-bar.variants";
 
 type AuthBarMobileMenuProps = {
   navItems: AuthBarNavItem[];
@@ -45,13 +39,13 @@ export function AuthBarMobileMenu({
       title="Меню"
     >
       {({ close }) => (
-        <div className={authBarMobileMenuNavVariants()}>
-          <nav className={authBarMobileMenuLinksVariants()}>
+        <div className="grid gap-4">
+          <nav className="grid gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={cn(authBarLinkVariants(), "block py-1")}
+                className="text-sm text-neutral-900 no-underline hover:underline block py-1"
                 onClick={close}
               >
                 {item.label}
@@ -59,9 +53,12 @@ export function AuthBarMobileMenu({
             ))}
           </nav>
 
-          <div className={authBarMobileMenuActionsVariants()}>
+          <div className="grid gap-2 border-t border-neutral-200 pt-4 [&_[data-slot=button]]:w-full">
             <CreateWalletDialog />
-            <CreateTransactionDialog wallets={wallets} categories={categories} />
+            <CreateTransactionDialog
+              wallets={wallets}
+              categories={categories}
+            />
             <form action={logout}>
               <Button type="submit" variant="outline" className="w-full">
                 Выйти

@@ -27,7 +27,8 @@ type FinanceStatsPageProps = {
 export default async function FinanceStatsPage({
   searchParams,
 }: FinanceStatsPageProps) {
-  const { kind, moneyType, walletId, categoryId, from, to } = await searchParams;
+  const { kind, moneyType, walletId, categoryId, from, to } =
+    await searchParams;
 
   const filters: TransactionFilters = {
     kind: parseTransactionKind(kind),
@@ -57,10 +58,12 @@ export default async function FinanceStatsPage({
         title="Статистика"
         lede="Графики и сводка по доходам и расходам."
       />
-
       <div className="mb-4 grid gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <CreateTransactionDialog wallets={walletOptions} categories={categories} />
+          <CreateTransactionDialog
+            wallets={walletOptions}
+            categories={categories}
+          />
         </div>
         <TransactionFiltersForm
           filters={filters}
@@ -69,9 +72,7 @@ export default async function FinanceStatsPage({
           target="stats"
         />
       </div>
-
       <ExpenseStatsPanel filters={filters} />
     </PageShell>
   );
 }
-

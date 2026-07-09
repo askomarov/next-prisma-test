@@ -1,6 +1,6 @@
 import type { TransactionFilters } from "@/entities/transaction";
 import { getExpenseStats, getIncomeStats } from "@/entities/transaction/server";
-import { Panel } from "@/shared/ui/panel";
+import { EmptyState, Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
 import { TransactionStatsDashboard } from "./expense-stats-dashboard";
 
@@ -12,21 +12,42 @@ export async function ExpenseStatsPanel({
   filters = {},
 }: ExpenseStatsPanelProps) {
   const { userId } = await requireAuthUserId();
-  const [expense, income] = await Promise.all([
+  const { getUserWalletOptions } = await import("@/entities/wallet/server");
+
+  const [expense, income, wallets] = await Promise.all([
     getExpenseStats(userId, filters),
     getIncomeStats(userId, filters),
+    getUserWalletOptions(userId),
   ]);
 
-  if (expense.byCurrency.length === 0 && income.byCurrency.length === 0) {
-    return null;
-  }
+  const isEmpty =
+    expense.byCurrency.length === 0 && income.byCurrency.length === 0;
+
+  const hasActiveFilters = Boolean(
+    filters.kind ||
+      filters.moneyType ||
+      filters.walletId ||
+      filters.categoryId ||
+      filters.from ||
+      filters.to,
+  );
 
   return (
     <Panel title="Статистика">
-      <TransactionStatsDashboard
-        expense={expense.byCurrency}
-        income={income.byCurrency}
-      />
+      {isEmpty ? (
+        <EmptyState className="text-center">
+          {hasActiveFilters
+            ? "По выбранным фильтрам записей нет."
+            : wallets.length === 0
+              ? "Сначала создайте кошелёк, затем добавьте операцию."
+              : "Записей пока нет. Нажмите «Добавить операцию»."}
+        </EmptyState>
+      ) : (
+        <TransactionStatsDashboard
+          expense={expense.byCurrency}
+          income={income.byCurrency}
+        />
+      )}
     </Panel>
   );
 }

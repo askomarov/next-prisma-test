@@ -68,7 +68,7 @@ function toTransactionFilters(state: FilterState): TransactionFilters {
 }
 
 function formatRangeLabel(range: DateRange | undefined) {
-  if (!range?.from && !range?.to) return "Даты: любые";
+  if (!range?.from && !range?.to) return "Выберите даты";
 
   const fmt = new Intl.DateTimeFormat("ru-RU", { dateStyle: "medium" });
   const from = range.from ? fmt.format(range.from) : "…";

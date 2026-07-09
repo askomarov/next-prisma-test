@@ -7,13 +7,8 @@ import { canViewUsers, requireAuthUserId } from "@/src/lib/auth/guards";
 import type { SessionUser } from "@/src/lib/auth/types";
 import { getAuthBarNavItems } from "../lib/auth-bar-nav";
 import { AuthBarMobileMenu } from "./auth-bar-mobile-menu";
-import {
-  authBarDesktopNavVariants,
-  authBarInnerVariants,
-  authBarLinkVariants,
-  authBarVariants,
-  logoutButtonVariants,
-} from "./auth-bar.variants";
+import { Button } from "@/src/shared/ui/button";
+import Image from "next/image";
 
 type AuthBarProps = {
   session: SessionUser;
@@ -36,8 +31,17 @@ export async function AuthBar({ session }: AuthBarProps) {
   }));
 
   return (
-    <header className={authBarVariants()}>
-      <div className={authBarInnerVariants()}>
+    <header className="border-b border-neutral-200 bg-neutral-50">
+      <div className="mx-auto flex container justify-between items-center gap-3 py-3">
+        <Link href="/">
+          <img
+            src="/images/app-icon-min.png"
+            alt="logo"
+            width={64}
+            height={32}
+            className="h-auto"
+          />
+        </Link>
         <div className="sm:hidden">
           <AuthBarMobileMenu
             navItems={navItems}
@@ -46,18 +50,25 @@ export async function AuthBar({ session }: AuthBarProps) {
           />
         </div>
 
-        <nav className={authBarDesktopNavVariants()} aria-label="Основная навигация">
+        <nav
+          className="hidden items-center gap-3 sm:flex"
+          aria-label="Основная навигация"
+        >
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={authBarLinkVariants()}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm text-neutral-900 no-underline hover:underline"
+            >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <form action={logout}>
-          <button type="submit" className={cn(logoutButtonVariants())}>
+        <form className="hidden sm:flex" action={logout}>
+          <Button type="submit" variant="outline">
             Выйти
-          </button>
+          </Button>
         </form>
       </div>
     </header>
