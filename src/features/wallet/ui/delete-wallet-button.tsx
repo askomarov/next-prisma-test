@@ -39,7 +39,7 @@ export function DeleteWalletButton({ wallet }: DeleteWalletButtonProps) {
       error={error}
       blockedHint={
         wallet.transactionCount > 0
-          ? `Есть операции (${wallet.transactionCount})`
+          ? `Есть транзакции (${wallet.transactionCount})`
           : undefined
       }
     />

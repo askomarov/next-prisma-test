@@ -56,11 +56,12 @@ export function AuthBarMobileMenu({
 
           <ThemeToggle variant="expanded" />
 
-          <div className="grid gap-2 border-t border-border pt-4 [&_[data-slot=button]]:w-full">
+          <div className="grid gap-2 border-t border-border pt-4">
             <CreateWalletDialog />
             <CreateTransactionDialog
               wallets={wallets}
               categories={categories}
+              label="Добавить транзакцию"
             />
             <form action={logout}>
               <Button type="submit" variant="outline" className="w-full">

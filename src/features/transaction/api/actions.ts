@@ -60,7 +60,7 @@ async function saveTransaction(
       });
 
       if (!existing) {
-        return { error: "Операция не найдена" };
+        return { error: "Транзакция не найдена" };
       }
 
       await prisma.transaction.update({
@@ -90,7 +90,7 @@ async function saveTransaction(
       });
     }
   } catch {
-    return { error: "Не удалось сохранить операцию" };
+    return { error: "Не удалось сохранить транзакцию" };
   }
 
   revalidateFinancePaths(revalidatePath);

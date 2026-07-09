@@ -97,7 +97,7 @@ function SummaryCards({
       </Card>
       <Card size="sm">
         <CardHeader>
-          <CardDescription>Операций</CardDescription>
+          <CardDescription>Транзакций</CardDescription>
           <CardTitle className="text-lg tabular-nums">{stats.count}</CardTitle>
         </CardHeader>
       </Card>

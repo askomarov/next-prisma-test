@@ -7,7 +7,7 @@ export function getAuthBarNavItems(showUsers: boolean): AuthBarNavItem[] {
   return [
     ...(showUsers ? [{ href: "/", label: "Пользователи" }] : []),
     { href: "/finance", label: "Кошельки" },
-    { href: "/finance/transactions", label: "Операции" },
+    { href: "/finance/transactions", label: "Транзакции" },
     { href: "/finance/stats", label: "Статистика" },
     { href: "/finance/categories", label: "Категории" },
   ];

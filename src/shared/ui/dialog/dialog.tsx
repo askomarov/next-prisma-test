@@ -46,7 +46,7 @@ export function Dialog({ trigger, title, children, className }: DialogProps) {
       <dialog
         ref={dialogRef}
         className={cn(
-          "w-full max-w-md m-auto rounded-lg border border-border bg-background p-4 shadow-lg backdrop:bg-black/40",
+          "w-full max-w-md m-auto rounded-lg border border-border bg-background p-4 shadow-lg backdrop:bg-black/70",
           className,
         )}
         onClose={() => onClose?.()}

@@ -9,15 +9,18 @@ import {
   TransactionForm,
   TransactionFormSuccessContext,
 } from "./transaction-form";
+import { PlusCircleIcon } from "lucide-react";
 
 type CreateTransactionDialogProps = {
   wallets: WalletOption[];
   categories: CategoryOption[];
+  label?: string;
 };
 
 export function CreateTransactionDialog({
   wallets,
   categories,
+  label = "Добавить",
 }: CreateTransactionDialogProps) {
   const [formKey, setFormKey] = useState(0);
   const resetForm = () => setFormKey((key) => key + 1);
@@ -25,7 +28,7 @@ export function CreateTransactionDialog({
   if (wallets.length === 0) {
     return (
       <Button type="button" className="w-auto" disabled>
-        Добавить операцию
+        {label} <PlusCircleIcon />
       </Button>
     );
   }
@@ -35,10 +38,10 @@ export function CreateTransactionDialog({
       <Dialog
         trigger={
           <Button type="button" className="w-auto">
-            Добавить операцию
+            {label} <PlusCircleIcon />
           </Button>
         }
-        title="Новая операция"
+        title="Новая транзакция"
       >
         {({ close }) => (
           <TransactionFormSuccessContext.Provider

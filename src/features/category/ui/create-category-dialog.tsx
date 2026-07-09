@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import { CategoryForm, CategoryFormSuccessContext } from "./category-form";
+import { PlusCircleIcon } from "lucide-react";
 
 export function CreateCategoryDialog() {
   const [formKey, setFormKey] = useState(0);
@@ -14,7 +15,7 @@ export function CreateCategoryDialog() {
       <Dialog
         trigger={
           <Button type="button" className="w-auto">
-            Новая категория
+            Создать <PlusCircleIcon />
           </Button>
         }
         title="Создать категорию"

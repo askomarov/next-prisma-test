@@ -92,7 +92,7 @@ function SummaryCards({
           <CardTitle
             className={cn(
               "text-lg tabular-nums",
-              net >= 0 ? "text-green-700" : "text-red-700",
+              net >= 0 ? "text-success" : "text-destructive",
             )}
           >
             {net >= 0

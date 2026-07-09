@@ -139,7 +139,7 @@ export async function deleteWallet(walletId: string): Promise<WalletResult> {
   }
 
   if (existing._count.transactions > 0) {
-    return { error: "Нельзя удалить кошелёк с операциями" };
+    return { error: "Нельзя удалить кошелёк с транзакциями" };
   }
 
   try {

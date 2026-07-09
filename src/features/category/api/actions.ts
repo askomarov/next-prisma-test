@@ -136,7 +136,7 @@ export async function deleteCategory(
   }
 
   if (existing._count.transactions > 0) {
-    return { error: "Нельзя удалить категорию с операциями" };
+    return { error: "Нельзя удалить категорию с транзакциями" };
   }
 
   try {

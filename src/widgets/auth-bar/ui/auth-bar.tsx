@@ -40,7 +40,7 @@ export async function AuthBar({ session }: AuthBarProps) {
             alt="logo"
             width={64}
             height={32}
-            className="h-auto"
+            className="h-auto w-12 sm:w-16"
           />
         </Link>
         <div className="sm:hidden">

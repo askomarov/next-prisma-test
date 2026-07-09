@@ -25,11 +25,11 @@ export async function ExpenseStatsPanel({
 
   const hasActiveFilters = Boolean(
     filters.kind ||
-      filters.moneyType ||
-      filters.walletId ||
-      filters.categoryId ||
-      filters.from ||
-      filters.to,
+    filters.moneyType ||
+    filters.walletId ||
+    filters.categoryId ||
+    filters.from ||
+    filters.to,
   );
 
   return (
@@ -39,8 +39,8 @@ export async function ExpenseStatsPanel({
           {hasActiveFilters
             ? "По выбранным фильтрам записей нет."
             : wallets.length === 0
-              ? "Сначала создайте кошелёк, затем добавьте операцию."
-              : "Записей пока нет. Нажмите «Добавить операцию»."}
+              ? "Сначала создайте кошелёк, затем добавьте транзакцию."
+              : "Записей пока нет. Нажмите «Добавить»."}
         </EmptyState>
       ) : (
         <TransactionStatsDashboard

@@ -56,7 +56,7 @@ export function EditTransactionDialog({
           <PenSquareIcon />
         </Button>
       }
-      title="Редактировать операцию"
+      title="Редактировать транзакцию"
     >
       {({ close }) => (
         <TransactionFormSuccessContext.Provider value={close}>

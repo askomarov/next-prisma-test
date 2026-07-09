@@ -14,7 +14,7 @@ export default async function CategoriesPage() {
       <PageHero
         eyebrow="Финансы"
         title="Категории"
-        lede="Группируйте операции: продукты, транспорт, зарплата и свои категории."
+        lede="Группируйте транзакции: продукты, транспорт, зарплата и свои категории."
       />
 
       <CategoriesPanel categories={categories} />

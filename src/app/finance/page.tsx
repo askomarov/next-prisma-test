@@ -26,7 +26,7 @@ export default async function FinancePage() {
       <Panel title="Разделы">
         <div className="grid gap-2 text-sm">
           <Link href="/finance/transactions" className="underline">
-            Операции
+            Транзакции
           </Link>
           <Link href="/finance/stats" className="underline">
             Статистика

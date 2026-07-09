@@ -52,7 +52,8 @@ export async function TransactionsTable({
   const { getUserCategoryOptions } = await import("@/entities/category/server");
 
   const wallets = initialWallets ?? (await getUserWalletOptions(userId));
-  const categories = initialCategories ?? (await getUserCategoryOptions(userId));
+  const categories =
+    initialCategories ?? (await getUserCategoryOptions(userId));
   const { transactions, total, page, totalPages } = await getTransactionsPage(
     userId,
     requestedPage,
@@ -60,15 +61,12 @@ export async function TransactionsTable({
   );
 
   const hasActiveFilters = Boolean(
-    filters.kind ||
-      filters.moneyType ||
-      filters.walletId ||
-      filters.categoryId,
+    filters.kind || filters.moneyType || filters.walletId || filters.categoryId,
   );
 
   return (
     <Panel
-      title="Операции"
+      title="Транзакции"
       meta={
         <>
           {total ?? 0} записей
@@ -86,7 +84,7 @@ export async function TransactionsTable({
 
       {!transactions ? (
         <EmptyState>
-          Не удалось загрузить операции. Запустите{" "}
+          Не удалось загрузить транзакции. Запустите{" "}
           <code className={inlineCodeVariants()}>db:push</code>, затем обновите
           страницу.
         </EmptyState>
@@ -95,8 +93,8 @@ export async function TransactionsTable({
           {hasActiveFilters
             ? "По выбранным фильтрам записей нет."
             : wallets.length === 0
-              ? "Сначала создайте кошелёк, затем добавьте операцию."
-              : "Записей пока нет. Нажмите «Добавить операцию»."}
+              ? "Сначала создайте кошелёк, затем добавьте транзакцию."
+              : "Записей пока нет. Нажмите «Добавить»."}
         </EmptyState>
       ) : (
         <>

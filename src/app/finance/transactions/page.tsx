@@ -28,8 +28,15 @@ type TransactionsPageProps = {
 export default async function TransactionsPage({
   searchParams,
 }: TransactionsPageProps) {
-  const { page: pageParam, kind, moneyType, walletId, categoryId, from, to } =
-    await searchParams;
+  const {
+    page: pageParam,
+    kind,
+    moneyType,
+    walletId,
+    categoryId,
+    from,
+    to,
+  } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const filters: TransactionFilters = {
     kind: parseTransactionKind(kind),
@@ -56,7 +63,7 @@ export default async function TransactionsPage({
     <PageShell>
       <PageHero
         eyebrow="Финансы"
-        title="Операции"
+        title="Транзакции"
         lede="Список приходов и расходов с фильтрами по типу, деньгам, кошельку и категории."
       />
 

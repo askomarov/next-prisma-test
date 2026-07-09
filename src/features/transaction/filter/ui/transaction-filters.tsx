@@ -284,7 +284,7 @@ export function TransactionFilters({
       <Select
         value={state.kind}
         onChange={(event) => updateFilter({ kind: event.target.value })}
-        aria-label="Фильтр по типу операции"
+        aria-label="Фильтр по типу транзакции"
       >
         <option value="">Все типы</option>
         {Object.entries(TRANSACTION_KIND_LABELS).map(([value, label]) => (

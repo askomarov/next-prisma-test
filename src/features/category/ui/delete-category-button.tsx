@@ -39,7 +39,7 @@ export function DeleteCategoryButton({ category }: DeleteCategoryButtonProps) {
       error={error}
       blockedHint={
         category.transactionCount > 0
-          ? `Есть операции (${category.transactionCount})`
+          ? `Есть транзакции (${category.transactionCount})`
           : undefined
       }
     />

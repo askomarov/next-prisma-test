@@ -21,8 +21,8 @@ export const transactionDateVariants = cva(
 export const transactionAmountVariants = cva("text-sm font-semibold tabular-nums", {
   variants: {
     kind: {
-      INCOME: "text-green-700",
-      EXPENSE: "text-red-700",
+      INCOME: "text-success",
+      EXPENSE: "text-destructive",
     },
   },
 });

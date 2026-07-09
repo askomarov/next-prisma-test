@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, type ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
 import { formatMoney } from "@/entities/wallet";
@@ -42,6 +42,17 @@ function formatDateInputValue(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+function handleDateInputChange(
+  event: ChangeEvent<HTMLInputElement>,
+  onChange: (date: Date) => void,
+  fallback: Date,
+  onClearError: () => void,
+) {
+  const value = event.target.value;
+  onChange(value ? new Date(value) : fallback);
+  onClearError();
+}
+
 function buildCreateDefaults(wallets: WalletOption[]): TransactionFormValues {
   return {
     walletId: wallets[0]?.id ?? "",
@@ -67,6 +78,7 @@ export function TransactionForm({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     watch,
@@ -226,15 +238,25 @@ export function TransactionForm({
         </FormField>
 
         <FormField error={errors.occurredAt?.message}>
-          <Input
-            type="date"
-            error={Boolean(errors.occurredAt)}
-            defaultValue={formatDateInputValue(resolvedDefaults.occurredAt)}
-            {...register("occurredAt", {
-              setValueAs: (value: string) =>
-                value ? new Date(value) : resolvedDefaults.occurredAt,
-              onChange: () => clearErrors("occurredAt"),
-            })}
+          <Controller
+            name="occurredAt"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="date"
+                error={Boolean(errors.occurredAt)}
+                value={formatDateInputValue(field.value)}
+                onChange={(event) =>
+                  handleDateInputChange(
+                    event,
+                    field.onChange,
+                    field.value,
+                    () => clearErrors("occurredAt"),
+                  )
+                }
+                onBlur={field.onBlur}
+              />
+            )}
           />
         </FormField>
       </div>
