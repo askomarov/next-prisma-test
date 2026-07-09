@@ -38,6 +38,9 @@ export default async function RootLayout({
         notoSansHeading.variable,
       )}
     >
+      <meta name="apple-mobile-web-app-title" content="Budget" />
+      <meta name="description" content="It is a simple budget tracker." />
+      <title>Budget</title>
       <body>
         <ThemeProvider
           attribute="class"
