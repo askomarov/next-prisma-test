@@ -2,10 +2,7 @@ import type { CategoryListItem } from "@/entities/category";
 import { getUserCategoryList } from "@/entities/category/server";
 import { EmptyState, Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
-import {
-  CategoriesList,
-  CategoriesPanelActions,
-} from "./categories-panel";
+import { CategoriesList, CategoriesPanelActions } from "./categories-panel";
 
 type CategoriesPanelProps = {
   categories?: CategoryListItem[];
@@ -15,14 +12,11 @@ export async function CategoriesPanel({
   categories: initialCategories,
 }: CategoriesPanelProps) {
   const { userId } = await requireAuthUserId();
-  const categories =
-    initialCategories ?? (await getUserCategoryList(userId));
+  const categories = initialCategories ?? (await getUserCategoryList(userId));
 
   return (
     <Panel title="Категории" meta={<>{categories.length} шт.</>}>
-      <div className="mb-3">
-        <CategoriesPanelActions />
-      </div>
+      <CategoriesPanelActions />
 
       {categories.length === 0 ? (
         <EmptyState className="text-center">

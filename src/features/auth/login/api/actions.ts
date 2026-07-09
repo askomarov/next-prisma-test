@@ -4,10 +4,10 @@ import { prisma } from "@/src/lib/prisma";
 import { hashPassword, verifyPassword } from "@/src/lib/auth/password";
 import { getHomePathForRole } from "@/src/lib/auth/roles";
 import { createSession, destroySession } from "@/src/lib/auth/session";
-import { loginSchema } from "../model/schema";
+import { loginSchema, type LoginInput } from "../model/schema";
 import { redirect } from "next/navigation";
 
-type LoginState = {
+type LoginResult = {
   error?: string;
 };
 
@@ -18,14 +18,8 @@ function getSuperAdminCredentials() {
   };
 }
 
-export async function login(
-  _prevState: LoginState,
-  formData: FormData,
-): Promise<LoginState> {
-  const parsed = loginSchema.safeParse({
-    email: String(formData.get("email") ?? "").trim(),
-    password: String(formData.get("password") ?? ""),
-  });
+export async function login(input: LoginInput): Promise<LoginResult> {
+  const parsed = loginSchema.safeParse(input);
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -65,7 +59,7 @@ export async function login(
   });
 
   if (!user || !(await verifyPassword(password, user.passwordHash))) {
-    return { error: "Invalid email or password" };
+    return { error: "Неверный логин или пароль" };
   }
 
   await createSession({

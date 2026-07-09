@@ -40,11 +40,10 @@ export function UserSearch({ defaultValue }: UserSearchProps) {
   return (
     <Input
       type="search"
-      placeholder="Search by name or email"
+      placeholder="Поиск по имени или email"
       value={value}
       onChange={(event) => setValue(event.target.value)}
-      className="mb-3"
-      aria-label="Search users by name or email"
+      aria-label="Поиск пользователей по имени или email"
     />
   );
 }

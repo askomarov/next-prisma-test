@@ -1,15 +1,8 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/utils";
-import {
-  emptyStateVariants,
-  panelHeaderVariants,
-  panelMetaVariants,
-  panelTitleVariants,
-  panelVariants,
-} from "./panel.variants";
 
 type PanelProps = {
-  title: string;
+  title?: string;
   meta?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -17,10 +10,14 @@ type PanelProps = {
 
 export function Panel({ title, meta, children, className }: PanelProps) {
   return (
-    <section className={cn(panelVariants(), className)}>
-      <div className={panelHeaderVariants()}>
-        <h2 className={panelTitleVariants()}>{title}</h2>
-        {meta ? <span className={panelMetaVariants()}>{meta}</span> : null}
+    <section
+      className={cn("rounded-lg border border-border p-4 space-y-3", className)}
+    >
+      <div className="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-start">
+        {title ? <h2 className="text-sm font-semibold">{title}</h2> : null}
+        {meta ? (
+          <span className="text-xs text-muted-foreground">{meta}</span>
+        ) : null}
       </div>
       {children}
     </section>
@@ -34,5 +31,7 @@ export function EmptyState({
   children: ReactNode;
   className?: string;
 }) {
-  return <p className={cn(emptyStateVariants(), className)}>{children}</p>;
+  return (
+    <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>
+  );
 }

@@ -1,34 +1,76 @@
 "use client";
 
-import { useActionState } from "react";
-import { Button, FormError, Input } from "@/shared/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button, FormError, FormField, Input } from "@/shared/ui/button";
 import { login } from "../api/actions";
+import { loginSchema, type LoginInput } from "../model/schema";
 import { loginFormVariants } from "./login-form.variants";
 
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState(login, {});
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const [email, password] = watch(["email", "password"]);
+  const canSubmit = Boolean(email.trim() && password.trim());
+
+  const onSubmit = async (data: LoginInput) => {
+    const result = await login(data);
+
+    if (result.error) {
+      setError("root", { message: result.error });
+    }
+  };
+
 
   return (
-    <form action={formAction} className={loginFormVariants()}>
-      <Input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-        autoComplete="email"
-      />
-      <Input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-        autoComplete="current-password"
-      />
-      <Button type="submit" loading={isPending} loadingText="Signing in...">
-        Sign in
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={loginFormVariants()}
+    >
+      <FormField error={errors.email?.message}>
+        <Input
+          type="email"
+          placeholder="Email"
+          autoComplete="email"
+          error={Boolean(errors.email)}
+          {...register("email", {
+            onChange: () => clearErrors("email"),
+          })}
+        />
+      </FormField>
+
+      <FormField error={errors.password?.message}>
+        <Input
+          type="password"
+          placeholder="Password"
+          autoComplete="current-password"
+          error={Boolean(errors.password)}
+          {...register("password", {
+            onChange: () => clearErrors("password"),
+          })}
+        />
+      </FormField>
+
+      <Button
+        type="submit"
+        loading={isSubmitting}
+        loadingText="Вход..."
+        disabled={!canSubmit}
+      >
+        Войти
       </Button>
 
-      <FormError message={state.error} />
+      <FormError message={errors.root?.message} />
     </form>
   );
 }

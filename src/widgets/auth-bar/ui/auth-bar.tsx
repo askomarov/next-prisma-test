@@ -8,7 +8,6 @@ import type { SessionUser } from "@/src/lib/auth/types";
 import { getAuthBarNavItems } from "../lib/auth-bar-nav";
 import { AuthBarMobileMenu } from "./auth-bar-mobile-menu";
 import { Button } from "@/src/shared/ui/button";
-import Image from "next/image";
 import { ThemeToggle } from "@/src/shared/ui/theme-toggle";
 
 type AuthBarProps = {

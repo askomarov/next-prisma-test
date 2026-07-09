@@ -15,10 +15,10 @@ export function CreateUserDialog() {
       <Dialog
         trigger={
           <Button type="button" className="w-auto">
-            Create User
+            Создать пользователя
           </Button>
         }
-        title="Create user"
+        title="Создать пользователя"
       >
         {({ close }) => (
           <CreateUserSuccessContext.Provider

@@ -5,9 +5,9 @@ import { Panel } from "@/shared/ui/panel";
 export default function LoginPage() {
   return (
     <PageShell>
-      <PageHero eyebrow="Sign in" title="Log in to continue." />
+      <PageHero eyebrow="Вход" title="Вход в систему" />
 
-      <Panel title="Account">
+      <Panel>
         <LoginForm />
       </Panel>
     </PageShell>

@@ -81,7 +81,7 @@ export function CreateUserForm() {
       </FormField>
 
       <Button type="submit" loading={isSubmitting} loadingText="Creating...">
-        Create User
+        Создать пользователя
       </Button>
 
       <FormError message={errors.root?.message} />

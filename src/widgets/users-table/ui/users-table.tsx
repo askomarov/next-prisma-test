@@ -15,7 +15,10 @@ type UsersTableProps = {
   search: string;
 };
 
-export async function UsersTable({ page: requestedPage, search }: UsersTableProps) {
+export async function UsersTable({
+  page: requestedPage,
+  search,
+}: UsersTableProps) {
   const { users, total, page, totalPages } = await getUsersPage(
     requestedPage,
     search,
@@ -31,11 +34,11 @@ export async function UsersTable({ page: requestedPage, search }: UsersTableProp
 
   return (
     <Panel
-      title="Users"
+      title="Пользователи"
       meta={
         <>
-          {total ?? 0} total
-          {total !== undefined && total > 0 && ` · page ${page}/${totalPages}`}
+          {total ?? 0} всего
+          {total !== undefined && total > 0 && ` · стр. ${page}/${totalPages}`}
         </>
       }
     >
@@ -43,14 +46,16 @@ export async function UsersTable({ page: requestedPage, search }: UsersTableProp
 
       {!users ? (
         <EmptyState>
-          Could not query users yet. Run <code className={inlineCodeVariants()}>db:migrate</code>, then{" "}
-          <code className={inlineCodeVariants()}>db:seed</code>, then refresh.
+          Не удалось получить список пользователей. Запустите{" "}
+          <code className={inlineCodeVariants()}>db:migrate</code>, затем{" "}
+          <code className={inlineCodeVariants()}>db:seed</code>, затем обновите
+          страницу.
         </EmptyState>
       ) : users.length === 0 ? (
         <EmptyState className="text-center">
           {hasSearch
-            ? `No users found for "${trimmedSearch}".`
-            : "No users yet. Run db:seed after your first migration."}
+            ? `Пользователи не найдены для "${trimmedSearch}".`
+            : "Пользователи пока нет. Запустите db:seed после первой миграции."}
         </EmptyState>
       ) : (
         <>
@@ -58,7 +63,7 @@ export async function UsersTable({ page: requestedPage, search }: UsersTableProp
             {users.map((user) => (
               <li key={user.id} className={userItemVariants()}>
                 <div>
-                  <strong>{user.name ?? "Unnamed user"}</strong>
+                  <strong>{user.name ?? "Без имени"}</strong>
                   <p className={userEmailVariants()}>{user.email}</p>
                 </div>
                 <time
