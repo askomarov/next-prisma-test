@@ -126,6 +126,9 @@
   }
   body {
     @apply bg-background text-foreground;
+
+    background-image: repeating-linear-gradient(45deg, var(--color-muted) 0 1px, transparent 0px 49px), repeating-linear-gradient(-45deg, var(--color-muted) 0 1px, transparent 0px 49px);
+    background-size: 70px 70px;
   }
   html {
     @apply font-sans;

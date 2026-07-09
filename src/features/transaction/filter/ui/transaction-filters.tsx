@@ -21,7 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover/popover";
-import { transactionFiltersVariants } from "./transaction-filters.variants";
 
 type TransactionFiltersProps = {
   filters: TransactionFilters;
@@ -178,7 +177,7 @@ export function TransactionFilters({
     : categories;
 
   return (
-    <div className={transactionFiltersVariants()}>
+    <div className="mb-3 flex flex-wrap gap-3 p-3 bg-card border border-border rounded-lg">
       <Popover>
         <PopoverTrigger
           render={

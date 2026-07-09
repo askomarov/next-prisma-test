@@ -11,7 +11,10 @@ type PanelProps = {
 export function Panel({ title, meta, children, className }: PanelProps) {
   return (
     <section
-      className={cn("rounded-lg border border-border p-4 space-y-3", className)}
+      className={cn(
+        "rounded-lg border border-border bg-card p-4 space-y-3",
+        className,
+      )}
     >
       <div className="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-start">
         {title ? <h2 className="text-sm font-semibold">{title}</h2> : null}

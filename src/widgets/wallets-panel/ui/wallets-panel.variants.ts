@@ -13,5 +13,5 @@ export const walletActionsVariants = cva(
 );
 
 export const walletCurrencyVariants = cva(
-  "rounded-full border border-border bg-neutral-50 px-2 py-0.5 text-xs font-medium",
+  "rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium",
 );
