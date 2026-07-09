@@ -1,13 +1,23 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, FormError, FormField, Input } from "@/shared/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/shared/ui/input-group/input-group";
 import { login } from "../api/actions";
 import { loginSchema, type LoginInput } from "../model/schema";
 import { loginFormVariants } from "./login-form.variants";
 
 export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -31,12 +41,8 @@ export function LoginForm() {
     }
   };
 
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={loginFormVariants()}
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className={loginFormVariants()}>
       <FormField error={errors.email?.message}>
         <Input
           type="email"
@@ -50,15 +56,26 @@ export function LoginForm() {
       </FormField>
 
       <FormField error={errors.password?.message}>
-        <Input
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          error={Boolean(errors.password)}
-          {...register("password", {
-            onChange: () => clearErrors("password"),
-          })}
-        />
+        <InputGroup>
+          <InputGroupInput
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            autoComplete="current-password"
+            aria-invalid={Boolean(errors.password)}
+            {...register("password", {
+              onChange: () => clearErrors("password"),
+            })}
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              size="icon-xs"
+              aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+              onClick={() => setShowPassword((value) => !value)}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
       </FormField>
 
       <Button
