@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const paginationVariants = cva(
-  "mt-3 flex items-center justify-between gap-4 border-t border-neutral-100 pt-3 text-[0.8rem]",
+  "mt-3 flex items-center justify-between gap-4 border-t border-border pt-3 text-[0.8rem]",
 );
 
 export const paginationLinkVariants = cva(

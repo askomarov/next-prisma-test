@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 export const usersListVariants = cva("m-0 grid list-none gap-2 p-0");
 
 export const userItemVariants = cva(
-  "flex items-center justify-between gap-4 rounded-md border border-neutral-100 px-3 py-2.5 max-sm:flex-col max-sm:items-start",
+  "flex items-center justify-between gap-4 rounded-md border border-border px-3 py-2.5 max-sm:flex-col max-sm:items-start",
 );
 
 export const userEmailVariants = cva("mt-0.5");

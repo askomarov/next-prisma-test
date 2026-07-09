@@ -11,6 +11,7 @@ import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
 import { cn } from "@/shared/lib/utils";
 import type { AuthBarNavItem } from "../lib/auth-bar-nav";
+import { ThemeToggle } from "@/src/shared/ui/theme-toggle";
 
 type AuthBarMobileMenuProps = {
   navItems: AuthBarNavItem[];
@@ -45,7 +46,7 @@ export function AuthBarMobileMenu({
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm text-neutral-900 no-underline hover:underline block py-1"
+                className="text-sm text-foreground no-underline hover:underline block py-1"
                 onClick={close}
               >
                 {item.label}
@@ -53,7 +54,9 @@ export function AuthBarMobileMenu({
             ))}
           </nav>
 
-          <div className="grid gap-2 border-t border-neutral-200 pt-4 [&_[data-slot=button]]:w-full">
+          <ThemeToggle variant="expanded" />
+
+          <div className="grid gap-2 border-t border-border pt-4 [&_[data-slot=button]]:w-full">
             <CreateWalletDialog />
             <CreateTransactionDialog
               wallets={wallets}

@@ -10,13 +10,8 @@ import {
   isValidElement,
 } from "react";
 import { cn } from "@/shared/lib/utils";
-import {
-  dialogCloseVariants,
-  dialogHeaderVariants,
-  dialogTitleVariants,
-  dialogVariants,
-} from "./dialog.variants";
-
+import { Button } from "@/shared/ui/button";
+import { XIcon } from "lucide-react";
 export const DialogOnCloseContext = createContext<(() => void) | null>(null);
 
 type DialogProps = {
@@ -50,20 +45,24 @@ export function Dialog({ trigger, title, children, className }: DialogProps) {
       {triggerElement}
       <dialog
         ref={dialogRef}
-        className={cn(dialogVariants(), className)}
+        className={cn(
+          "w-full max-w-md m-auto rounded-lg border border-border bg-background p-4 shadow-lg backdrop:bg-black/40",
+          className,
+        )}
         onClose={() => onClose?.()}
         closedby="any"
       >
-        <header className={dialogHeaderVariants()}>
-          <h2 className={dialogTitleVariants()}>{title}</h2>
-          <button
+        <header className="mb-4 flex items-start justify-between gap-4">
+          <h2 className="m-0 text-sm font-semibold">{title}</h2>
+          <Button
             type="button"
-            className={dialogCloseVariants()}
+            variant="outline"
+            size="icon"
             aria-label="Close"
             onClick={close}
           >
-            ×
-          </button>
+            <XIcon />
+          </Button>
         </header>
         {content}
       </dialog>

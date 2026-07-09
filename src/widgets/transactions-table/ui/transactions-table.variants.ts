@@ -5,7 +5,7 @@ export const transactionsToolbarVariants = cva("mb-3 grid gap-3");
 export const transactionsListVariants = cva("m-0 grid list-none gap-2 p-0");
 
 export const transactionItemVariants = cva(
-  "flex items-center justify-between gap-4 rounded-md border border-neutral-100 px-3 py-2.5 max-sm:flex-col max-sm:items-start",
+  "flex items-center justify-between gap-4 rounded-md border border-border px-3 py-2.5 max-sm:flex-col max-sm:items-start",
 );
 
 export const transactionItemActionsVariants = cva(

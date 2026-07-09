@@ -18,7 +18,7 @@ export function PageLoading() {
         <SkeletonBlock className="h-9 w-44" />
       </div>
 
-      <div className="rounded-lg border border-border bg-card p-4 shadow-xs">
+      <div className="rounded-lg border border-border p-4 shadow-xs">
         <div className="mb-4 flex items-center justify-between gap-4">
           <SkeletonBlock className="h-5 w-32" />
           <SkeletonBlock className="h-8 w-24" />

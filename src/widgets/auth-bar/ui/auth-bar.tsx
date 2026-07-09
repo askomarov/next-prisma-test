@@ -9,6 +9,7 @@ import { getAuthBarNavItems } from "../lib/auth-bar-nav";
 import { AuthBarMobileMenu } from "./auth-bar-mobile-menu";
 import { Button } from "@/src/shared/ui/button";
 import Image from "next/image";
+import { ThemeToggle } from "@/src/shared/ui/theme-toggle";
 
 type AuthBarProps = {
   session: SessionUser;
@@ -31,7 +32,7 @@ export async function AuthBar({ session }: AuthBarProps) {
   }));
 
   return (
-    <header className="border-b border-neutral-200 bg-neutral-50">
+    <header className="border-b border-border bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-800 ">
       <div className="mx-auto flex container justify-between items-center gap-3 py-3">
         <Link href="/">
           <img
@@ -58,18 +59,20 @@ export async function AuthBar({ session }: AuthBarProps) {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-neutral-900 no-underline hover:underline"
+              className="text-sm no-underline hover:underline"
             >
               {item.label}
             </Link>
           ))}
         </nav>
-
-        <form className="hidden sm:flex" action={logout}>
-          <Button type="submit" variant="outline">
-            Выйти
-          </Button>
-        </form>
+        <div className="hidden sm:flex items-center gap-3">
+          <ThemeToggle />
+          <form className="" action={logout}>
+            <Button type="submit" variant="outline">
+              Выйти
+            </Button>
+          </form>
+        </div>
       </div>
     </header>
   );

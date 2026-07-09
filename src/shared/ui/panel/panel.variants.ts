@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const panelVariants = cva(
-  "rounded-lg border border-neutral-200 p-4",
+  "rounded-lg border border-border p-4",
 );
 
 export const panelHeaderVariants = cva(

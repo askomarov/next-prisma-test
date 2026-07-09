@@ -4,6 +4,7 @@ import { getSession } from "@/src/lib/auth/session";
 import "./globals.css";
 import { IBM_Plex_Sans, Noto_Sans } from "next/font/google";
 import { cn } from "@/shared/lib/utils";
+import { ThemeProvider } from "@/shared/providers/theme-provider.tsx";
 
 const notoSansHeading = Noto_Sans({
   subsets: ["latin"],
@@ -29,7 +30,8 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang="ru"
+      suppressHydrationWarning
       className={cn(
         "font-sans",
         ibmPlexSans.variable,
@@ -37,8 +39,15 @@ export default async function RootLayout({
       )}
     >
       <body>
-        {session ? <AuthBar session={session} /> : null}
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {session ? <AuthBar session={session} /> : null}
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
