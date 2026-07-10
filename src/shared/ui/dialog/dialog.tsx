@@ -13,6 +13,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { XIcon } from "lucide-react";
 export const DialogOnCloseContext = createContext<(() => void) | null>(null);
+export const DialogCloseContext = createContext<(() => void) | null>(null);
 
 type DialogProps = {
   trigger: ReactElement<{ onClick?: (event: React.MouseEvent) => void }>;
@@ -64,7 +65,9 @@ export function Dialog({ trigger, title, children, className }: DialogProps) {
             <XIcon />
           </Button>
         </header>
-        {content}
+        <DialogCloseContext.Provider value={close}>
+          {content}
+        </DialogCloseContext.Provider>
       </dialog>
     </>
   );

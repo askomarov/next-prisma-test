@@ -1,1 +1,1 @@
-export { Dialog, DialogOnCloseContext } from "./dialog";
+export { Dialog, DialogCloseContext, DialogOnCloseContext } from "./dialog";
