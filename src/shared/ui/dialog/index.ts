@@ -1,1 +1,7 @@
-export { Dialog, DialogCloseContext, DialogOnCloseContext } from "./dialog";
+export {
+  Dialog,
+  DialogCloseContext,
+  DialogOnCloseContext,
+  DialogOpenContext,
+  type DialogOpenContextValue,
+} from "./dialog";

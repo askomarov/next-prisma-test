@@ -5,8 +5,9 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import { WalletForm, WalletFormSuccessContext } from "./wallet-form";
+import { cn } from "@/src/shared/lib/utils";
 
-export function CreateWalletDialog() {
+export function CreateWalletDialog({ className }: { className?: string }) {
   const router = useRouter();
   const [formKey, setFormKey] = useState(0);
   const resetForm = () => setFormKey((key) => key + 1);
@@ -15,7 +16,7 @@ export function CreateWalletDialog() {
     <DialogOnCloseContext.Provider value={resetForm}>
       <Dialog
         trigger={
-          <Button type="button" className="w-auto">
+          <Button type="button" className={cn("w-auto", className)}>
             Новый кошелёк
           </Button>
         }

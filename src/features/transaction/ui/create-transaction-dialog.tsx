@@ -10,17 +10,20 @@ import {
   TransactionFormSuccessContext,
 } from "./transaction-form";
 import { PlusCircleIcon } from "lucide-react";
+import { cn } from "@/src/shared/lib/utils";
 
 type CreateTransactionDialogProps = {
   wallets: WalletOption[];
   categories: CategoryOption[];
   label?: string;
+  className?: string;
 };
 
 export function CreateTransactionDialog({
   wallets,
   categories,
   label = "Добавить",
+  className,
 }: CreateTransactionDialogProps) {
   const [formKey, setFormKey] = useState(0);
   const resetForm = () => setFormKey((key) => key + 1);
@@ -37,7 +40,7 @@ export function CreateTransactionDialog({
     <DialogOnCloseContext.Provider value={resetForm}>
       <Dialog
         trigger={
-          <Button type="button" className="w-auto">
+          <Button type="button" className={cn("w-auto", className)}>
             {label} <PlusCircleIcon />
           </Button>
         }

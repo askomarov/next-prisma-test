@@ -5,8 +5,9 @@ import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
 import { CategoryForm, CategoryFormSuccessContext } from "./category-form";
 import { PlusCircleIcon } from "lucide-react";
+import { cn } from "@/src/shared/lib/utils";
 
-export function CreateCategoryDialog() {
+export function CreateCategoryDialog({ className }: { className?: string }) {
   const [formKey, setFormKey] = useState(0);
   const resetForm = () => setFormKey((key) => key + 1);
 
@@ -14,7 +15,7 @@ export function CreateCategoryDialog() {
     <DialogOnCloseContext.Provider value={resetForm}>
       <Dialog
         trigger={
-          <Button type="button" className="w-auto">
+          <Button type="button" className={cn("w-auto", className)}>
             Создать <PlusCircleIcon />
           </Button>
         }

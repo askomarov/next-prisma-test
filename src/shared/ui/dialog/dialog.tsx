@@ -3,7 +3,9 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useRef,
+  useState,
   type ReactElement,
   type ReactNode,
   cloneElement,
@@ -12,31 +14,78 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { XIcon } from "lucide-react";
+
 export const DialogOnCloseContext = createContext<(() => void) | null>(null);
 export const DialogCloseContext = createContext<(() => void) | null>(null);
 
+export type DialogOpenContextValue = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
+export const DialogOpenContext = createContext<DialogOpenContextValue | null>(
+  null,
+);
+
 type DialogProps = {
-  trigger: ReactElement<{ onClick?: (event: React.MouseEvent) => void }>;
+  trigger?: ReactElement<{ onClick?: (event: React.MouseEvent) => void }>;
   title: string;
   children: ReactNode | ((actions: { close: () => void }) => ReactNode);
   className?: string;
 };
 
-export function Dialog({ trigger, title, children, className }: DialogProps) {
+export function Dialog({
+  trigger,
+  title,
+  children,
+  className,
+}: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const onClose = useContext(DialogOnCloseContext);
+  const openContext = useContext(DialogOpenContext);
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  const close = () => dialogRef.current?.close();
-  const open = () => dialogRef.current?.showModal();
+  const isControlled = openContext !== null;
+  const open = isControlled ? openContext.open : internalOpen;
+  const setOpen = isControlled ? openContext.setOpen : setInternalOpen;
 
-  const triggerElement = isValidElement(trigger)
-    ? cloneElement(trigger, {
-        onClick: (event: React.MouseEvent) => {
-          trigger.props.onClick?.(event);
-          open();
-        },
-      })
-    : trigger;
+  const close = () => {
+    dialogRef.current?.close();
+    setOpen(false);
+  };
+
+  const openDialog = () => {
+    dialogRef.current?.showModal();
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    if (!isControlled) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (open && !dialog.open) {
+      dialog.showModal();
+    } else if (!open && dialog.open) {
+      dialog.close();
+    }
+  }, [isControlled, open]);
+
+  const handleDialogClose = () => {
+    onClose?.();
+    setOpen(false);
+  };
+
+  const triggerElement =
+    trigger && isValidElement(trigger)
+      ? cloneElement(trigger, {
+          onClick: (event: React.MouseEvent) => {
+            trigger.props.onClick?.(event);
+            openDialog();
+          },
+        })
+      : trigger;
 
   const content =
     typeof children === "function" ? children({ close }) : children;
@@ -50,7 +99,7 @@ export function Dialog({ trigger, title, children, className }: DialogProps) {
           "w-full max-w-md m-auto rounded-lg border border-border bg-background p-4 shadow-lg backdrop:bg-black/70",
           className,
         )}
-        onClose={() => onClose?.()}
+        onClose={handleDialogClose}
         closedby="any"
       >
         <header className="mb-4 flex items-start justify-between gap-4">

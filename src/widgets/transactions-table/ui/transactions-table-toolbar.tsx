@@ -5,7 +5,6 @@ import type { WalletOption } from "@/entities/wallet";
 import type { TransactionFilters as TransactionFiltersState } from "@/entities/transaction";
 import { CreateTransactionDialog } from "@/features/transaction";
 import { TransactionFilters } from "@/features/transaction/filter";
-import { transactionsToolbarVariants } from "./transactions-table.variants";
 
 type TransactionsTableToolbarProps = {
   wallets: WalletOption[];
@@ -19,7 +18,7 @@ export function TransactionsTableToolbar({
   filters,
 }: TransactionsTableToolbarProps) {
   return (
-    <div className={transactionsToolbarVariants()}>
+    <div className="mb-3 grid gap-3">
       <CreateTransactionDialog wallets={wallets} categories={categories} />
       <TransactionFilters
         filters={filters}

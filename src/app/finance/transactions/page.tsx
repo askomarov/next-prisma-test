@@ -65,15 +65,16 @@ export default async function TransactionsPage({
         eyebrow="Финансы"
         title="Транзакции"
         lede="Список приходов и расходов с фильтрами по типу, деньгам, кошельку и категории."
-      />
+        className="sm:grid sm:gap-x-10"
+      >
+        <CreateTransactionDialog
+          wallets={walletOptions}
+          categories={categories}
+          className="sm:col-start-2 sm:row-span-3 sm:row-start-1 sm:self-start"
+        />
+      </PageHero>
 
       <div className="mb-4 grid gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <CreateTransactionDialog
-            wallets={walletOptions}
-            categories={categories}
-          />
-        </div>
         <TransactionFiltersForm
           filters={filters}
           wallets={walletOptions}

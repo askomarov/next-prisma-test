@@ -2,17 +2,13 @@ import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
 import type { TransactionFilters } from "@/entities/transaction";
 import type { TransactionWithWallet } from "@/entities/transaction/api/get-transactions-page";
-import type { EditableTransaction } from "@/features/transaction";
+import type { EditableTransaction } from "../model/editable-transaction";
 import { getTransactionsPage } from "@/entities/transaction/server";
 import { EmptyState, Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
-import { TransactionListItem } from "./transaction-list-item";
 import { TransactionPagination } from "./transaction-pagination";
+import { TransactionsList } from "./transactions-list";
 import { TransactionsTableToolbar } from "./transactions-table-toolbar";
-import {
-  inlineCodeVariants,
-  transactionsListVariants,
-} from "./transactions-table.variants";
 
 type TransactionsTableProps = {
   page: number;
@@ -85,7 +81,9 @@ export async function TransactionsTable({
       {!transactions ? (
         <EmptyState>
           Не удалось загрузить транзакции. Запустите{" "}
-          <code className={inlineCodeVariants()}>db:push</code>, затем обновите
+          <code className="rounded bg-neutral-100 px-1 py-0.5 font-mono text-[0.875em]">
+            db:push
+          </code>, затем обновите
           страницу.
         </EmptyState>
       ) : transactions.length === 0 ? (
@@ -98,16 +96,11 @@ export async function TransactionsTable({
         </EmptyState>
       ) : (
         <>
-          <ul className={transactionsListVariants()}>
-            {transactions.map((transaction) => (
-              <TransactionListItem
-                key={transaction.id}
-                transaction={toEditableTransaction(transaction)}
-                wallets={wallets}
-                categories={categories}
-              />
-            ))}
-          </ul>
+          <TransactionsList
+            transactions={transactions.map(toEditableTransaction)}
+            wallets={wallets}
+            categories={categories}
+          />
 
           <TransactionPagination
             page={page}

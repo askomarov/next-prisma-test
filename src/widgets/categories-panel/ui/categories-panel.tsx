@@ -5,11 +5,7 @@ import {
   TRANSACTION_KIND_BADGE_VARIANTS,
   TRANSACTION_KIND_LABELS,
 } from "@/entities/transaction";
-import {
-  CreateCategoryDialog,
-  DeleteCategoryButton,
-  EditCategoryDialog,
-} from "@/features/category";
+import { DeleteCategoryButton, EditCategoryDialog } from "@/features/category";
 import { Badge } from "@/shared/ui/badge/badge";
 import {
   categoriesListVariants,
@@ -50,8 +46,4 @@ export function CategoriesList({ categories }: CategoriesListProps) {
       ))}
     </ul>
   );
-}
-
-export function CategoriesPanelActions() {
-  return <CreateCategoryDialog />;
 }
