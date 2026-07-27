@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CategoryOption } from "@/entities/category";
+import type { UserPreferences } from "@/entities/user-preferences";
 import type { WalletOption } from "@/entities/wallet";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogOnCloseContext } from "@/shared/ui/dialog";
@@ -15,6 +16,7 @@ import { cn } from "@/src/shared/lib/utils";
 type CreateTransactionDialogProps = {
   wallets: WalletOption[];
   categories: CategoryOption[];
+  preferences?: UserPreferences;
   label?: string;
   className?: string;
 };
@@ -22,6 +24,7 @@ type CreateTransactionDialogProps = {
 export function CreateTransactionDialog({
   wallets,
   categories,
+  preferences,
   label = "Добавить",
   className,
 }: CreateTransactionDialogProps) {
@@ -57,6 +60,7 @@ export function CreateTransactionDialog({
               key={formKey}
               wallets={wallets}
               categories={categories}
+              preferences={preferences}
             />
           </TransactionFormSuccessContext.Provider>
         )}

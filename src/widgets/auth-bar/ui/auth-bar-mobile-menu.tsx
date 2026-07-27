@@ -2,6 +2,7 @@
 
 import { MenuIcon } from "lucide-react";
 import type { CategoryOption } from "@/entities/category";
+import type { UserPreferences } from "@/entities/user-preferences";
 import type { WalletOption } from "@/entities/wallet";
 import { logout } from "@/features/auth/login";
 import { CreateTransactionDialog } from "@/features/transaction";
@@ -16,12 +17,14 @@ type AuthBarMobileMenuProps = {
   navItems: AuthBarNavItem[];
   wallets: WalletOption[];
   categories: CategoryOption[];
+  preferences: UserPreferences;
 };
 
 export function AuthBarMobileMenu({
   navItems,
   wallets,
   categories,
+  preferences,
 }: AuthBarMobileMenuProps) {
   return (
     <Dialog
@@ -53,6 +56,7 @@ export function AuthBarMobileMenu({
           <CreateTransactionDialog
             wallets={wallets}
             categories={categories}
+            preferences={preferences}
             label="Добавить транзакцию"
           />
           <form action={logout}>

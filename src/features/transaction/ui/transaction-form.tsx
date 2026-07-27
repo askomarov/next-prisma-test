@@ -11,6 +11,10 @@ import {
   TRANSACTION_KIND_LABELS,
 } from "@/entities/transaction";
 import {
+  resolveCreateDefaults,
+  type UserPreferences,
+} from "@/entities/user-preferences";
+import {
   Button,
   FormError,
   FormField,
@@ -30,6 +34,7 @@ export const TransactionFormSuccessContext = createContext<(() => void) | null>(
 type TransactionFormProps = {
   wallets: WalletOption[];
   categories: CategoryOption[];
+  preferences?: UserPreferences;
   mode?: "create" | "edit";
   transactionId?: string;
   defaultValues?: TransactionFormValues;
@@ -53,28 +58,18 @@ function handleDateInputChange(
   onClearError();
 }
 
-function buildCreateDefaults(wallets: WalletOption[]): TransactionFormValues {
-  return {
-    walletId: wallets[0]?.id ?? "",
-    kind: "EXPENSE",
-    moneyType: "REAL",
-    amount: Number.NaN,
-    description: "",
-    categoryId: "",
-    occurredAt: new Date(),
-  };
-}
-
 export function TransactionForm({
   wallets,
   categories,
+  preferences,
   mode = "create",
   transactionId,
   defaultValues,
 }: TransactionFormProps) {
   const onSuccess = useContext(TransactionFormSuccessContext);
   const isEdit = mode === "edit";
-  const resolvedDefaults = defaultValues ?? buildCreateDefaults(wallets);
+  const resolvedDefaults =
+    defaultValues ?? resolveCreateDefaults(wallets, preferences);
 
   const {
     register,
@@ -135,15 +130,7 @@ export function TransactionForm({
       return;
     }
 
-    reset({
-      walletId: data.walletId,
-      kind: data.kind,
-      moneyType: data.moneyType,
-      amount: Number.NaN,
-      description: "",
-      categoryId: data.categoryId,
-      occurredAt: new Date(),
-    });
+    reset(resolveCreateDefaults(wallets, preferences));
     onSuccess?.();
   };
 

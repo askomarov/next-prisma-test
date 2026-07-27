@@ -1,4 +1,5 @@
 import { getUserCategoryOptions } from "@/entities/category/server";
+import { getUserPreferences } from "@/entities/user-preferences/server";
 import { getUserWalletList } from "@/entities/wallet/server";
 import {
   parseMoneyType,
@@ -40,9 +41,10 @@ export default async function FinanceStatsPage({
   };
 
   const { userId } = await requireAuthUserId();
-  const [wallets, categories] = await Promise.all([
+  const [wallets, categories, preferences] = await Promise.all([
     getUserWalletList(userId),
     getUserCategoryOptions(userId),
+    getUserPreferences(userId),
   ]);
 
   const walletOptions = wallets.map((wallet) => ({
@@ -62,6 +64,7 @@ export default async function FinanceStatsPage({
         <CreateTransactionDialog
           wallets={walletOptions}
           categories={categories}
+          preferences={preferences}
           className="sm:col-start-2 sm:row-span-3 sm:row-start-1 sm:self-start"
         />
       </PageHero>

@@ -24,31 +24,43 @@ enum MoneyType {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
+  id           String           @id @default(cuid())
+  email        String           @unique
   name         String?
   passwordHash String
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  role         Role             @default(USER)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
   transactions Transaction[]
   wallets      Wallet[]
   categories   Category[]
+  preferences  UserPreferences?
 }
 
 model Wallet {
-  id           String        @id @default(cuid())
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name         String
-  currency     String        @db.Char(3)
-  description  String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  transactions Transaction[]
+  id                   String            @id @default(cuid())
+  userId               String
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                 String
+  currency             String            @db.Char(3)
+  description          String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  transactions         Transaction[]
+  defaultForUsers      UserPreferences[]
 
   @@unique([userId, name])
   @@index([userId])
+}
+
+model UserPreferences {
+  userId           String           @id
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultWalletId  String?
+  defaultWallet    Wallet?          @relation(fields: [defaultWalletId], references: [id], onDelete: SetNull)
+  defaultMoneyType MoneyType?
+  defaultKind      TransactionKind?
+  updatedAt        DateTime         @updatedAt
 }
 
 model Category {

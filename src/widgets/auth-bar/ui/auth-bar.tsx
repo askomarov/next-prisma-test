@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getUserCategoryOptions } from "@/entities/category/server";
+import { getUserPreferences } from "@/entities/user-preferences/server";
 import { getUserWalletList } from "@/entities/wallet/server";
 import { logout } from "@/features/auth/login";
 import { canViewUsers, requireAuthUserId } from "@/src/lib/auth/guards";
@@ -19,9 +20,10 @@ export async function AuthBar({ session }: AuthBarProps) {
   const navItems = getAuthBarNavItems(showUsers);
   const { userId } = await requireAuthUserId();
 
-  const [wallets, categories] = await Promise.all([
+  const [wallets, categories, preferences] = await Promise.all([
     getUserWalletList(userId),
     getUserCategoryOptions(userId),
+    getUserPreferences(userId),
   ]);
 
   const walletOptions = wallets.map((wallet) => ({
@@ -48,6 +50,7 @@ export async function AuthBar({ session }: AuthBarProps) {
             navItems={navItems}
             wallets={walletOptions}
             categories={categories}
+            preferences={preferences}
           />
         </div>
 

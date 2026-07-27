@@ -10,5 +10,6 @@ export function getAuthBarNavItems(showUsers: boolean): AuthBarNavItem[] {
     { href: "/finance/transactions", label: "Транзакции" },
     { href: "/finance/stats", label: "Статистика" },
     { href: "/finance/categories", label: "Категории" },
+    { href: "/account", label: "Кабинет" },
   ];
 }

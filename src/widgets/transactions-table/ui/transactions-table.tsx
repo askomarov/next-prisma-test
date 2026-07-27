@@ -1,4 +1,5 @@
 import type { CategoryOption } from "@/entities/category";
+import type { UserPreferences } from "@/entities/user-preferences";
 import type { WalletOption } from "@/entities/wallet";
 import type { TransactionFilters } from "@/entities/transaction";
 import type { TransactionWithWallet } from "@/entities/transaction/api/get-transactions-page";
@@ -15,6 +16,7 @@ type TransactionsTableProps = {
   filters?: TransactionFilters;
   wallets?: WalletOption[];
   categories?: CategoryOption[];
+  preferences?: UserPreferences;
   toolbar?: boolean;
 };
 
@@ -41,15 +43,21 @@ export async function TransactionsTable({
   filters = {},
   wallets: initialWallets,
   categories: initialCategories,
+  preferences: initialPreferences,
   toolbar = true,
 }: TransactionsTableProps) {
   const { userId } = await requireAuthUserId();
   const { getUserWalletOptions } = await import("@/entities/wallet/server");
   const { getUserCategoryOptions } = await import("@/entities/category/server");
+  const { getUserPreferences } = await import(
+    "@/entities/user-preferences/server"
+  );
 
   const wallets = initialWallets ?? (await getUserWalletOptions(userId));
   const categories =
     initialCategories ?? (await getUserCategoryOptions(userId));
+  const preferences =
+    initialPreferences ?? (await getUserPreferences(userId));
   const { transactions, total, page, totalPages } = await getTransactionsPage(
     userId,
     requestedPage,
@@ -74,6 +82,7 @@ export async function TransactionsTable({
         <TransactionsTableToolbar
           wallets={wallets}
           categories={categories}
+          preferences={preferences}
           filters={filters}
         />
       ) : null}
