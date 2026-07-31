@@ -23,6 +23,7 @@ type TransactionsPageProps = {
     categoryId?: string;
     from?: string;
     to?: string;
+    query?: string;
   }>;
 };
 
@@ -37,6 +38,7 @@ export default async function TransactionsPage({
     categoryId,
     from,
     to,
+    query,
   } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const filters: TransactionFilters = {
@@ -44,6 +46,7 @@ export default async function TransactionsPage({
     moneyType: parseMoneyType(moneyType),
     walletId: walletId || undefined,
     categoryId: categoryId || undefined,
+    query: query || undefined,
     from: from || undefined,
     to: to || undefined,
   };

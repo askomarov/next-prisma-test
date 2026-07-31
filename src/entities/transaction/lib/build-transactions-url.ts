@@ -8,6 +8,7 @@ type TransactionsQueryParams = {
   moneyType?: MoneyType;
   walletId?: string;
   categoryId?: string;
+  query?: string;
   from?: string;
   to?: string;
 };
@@ -18,6 +19,7 @@ export function buildTransactionsUrl({
   moneyType,
   walletId,
   categoryId,
+  query,
   from,
   to,
 }: TransactionsQueryParams) {
@@ -47,12 +49,16 @@ export function buildTransactionsUrl({
     params.set("to", to);
   }
 
+  if (query) {
+    params.set("query", query);
+  }
+
   if (page && page > 1) {
     params.set("page", String(page));
   }
 
-  const query = params.toString();
-  return query ? `${TRANSACTIONS_BASE_PATH}?${query}` : TRANSACTIONS_BASE_PATH;
+  const qs = params.toString();
+  return qs ? `${TRANSACTIONS_BASE_PATH}?${qs}` : TRANSACTIONS_BASE_PATH;
 }
 
 export { TRANSACTIONS_BASE_PATH };

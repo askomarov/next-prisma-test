@@ -9,6 +9,7 @@ export type TransactionFilters = {
   moneyType?: MoneyType;
   walletId?: string;
   categoryId?: string;
+  query?: string;
   /**
    * Inclusive date-only range in YYYY-MM-DD (ru-RU friendly).
    * Stored as string to be URL-safe; converted to Date in buildTransactionsWhere.
@@ -58,6 +59,12 @@ export function buildTransactionsWhere(
 
   if (filters.categoryId) {
     where.categoryId = filters.categoryId;
+  }
+  if (filters.query) {
+    where.description = {
+      contains: filters.query,
+      mode: "insensitive",
+    };
   }
 
   const from = filters.from ? parseDateOnly(filters.from) : null;

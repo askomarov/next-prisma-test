@@ -7,6 +7,7 @@ type TransactionStatsQueryParams = {
   moneyType?: MoneyType;
   walletId?: string;
   categoryId?: string;
+  query?: string;
   from?: string;
   to?: string;
 };

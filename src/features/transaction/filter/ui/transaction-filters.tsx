@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
 import {
@@ -11,7 +11,7 @@ import {
   buildTransactionsUrl,
   type TransactionFilters,
 } from "@/entities/transaction";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, SearchIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { cn } from "@/shared/lib/utils";
 import { Button, Select } from "@/shared/ui/button";
@@ -21,12 +21,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover/popover";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/shared/ui/input-group/input-group";
 
 type TransactionFiltersProps = {
   filters: TransactionFilters;
   wallets: WalletOption[];
   categories: CategoryOption[];
   target?: "transactions" | "stats";
+  hideSearchInput?: boolean;
 };
 
 type FilterState = {
@@ -34,6 +40,7 @@ type FilterState = {
   moneyType: string;
   walletId: string;
   categoryId: string;
+  query: string;
   from: string;
   to: string;
 };
@@ -44,6 +51,7 @@ function toFilterState(filters: TransactionFilters): FilterState {
     moneyType: filters.moneyType ?? "",
     walletId: filters.walletId ?? "",
     categoryId: filters.categoryId ?? "",
+    query: filters.query ?? "",
     from: filters.from ?? "",
     to: filters.to ?? "",
   };
@@ -61,6 +69,7 @@ function toTransactionFilters(state: FilterState): TransactionFilters {
         : undefined,
     walletId: state.walletId || undefined,
     categoryId: state.categoryId || undefined,
+    query: state.query.trim() || undefined,
     from: state.from || undefined,
     to: state.to || undefined,
   };
@@ -119,27 +128,47 @@ export function TransactionFilters({
   wallets,
   categories,
   target = "transactions",
+  hideSearchInput = false,
 }: TransactionFiltersProps) {
   const router = useRouter();
   const [state, setState] = useState<FilterState>(() => toFilterState(filters));
 
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const queryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Trimmed query we committed to URL; keep local input until searchParams catch up. */
+  const pendingQueryRef = useRef<string | null>(null);
+
   useEffect(() => {
-    setState(toFilterState(filters));
+    setState((prev) => {
+      const next = toFilterState(filters);
+      const urlQuery = (filters.query ?? "").trim();
+
+      if (queryTimerRef.current || pendingQueryRef.current !== null) {
+        if (
+          pendingQueryRef.current !== null &&
+          urlQuery === pendingQueryRef.current
+        ) {
+          pendingQueryRef.current = null;
+          return { ...next, query: prev.query };
+        }
+        return { ...next, query: prev.query };
+      }
+
+      return next;
+    });
   }, [
     filters.kind,
     filters.moneyType,
     filters.walletId,
     filters.categoryId,
+    filters.query,
     filters.from,
     filters.to,
   ]);
 
-  const updateFilter = (patch: Partial<FilterState>) => {
-    const nextState = { ...state, ...patch };
-    setState(nextState);
-
+  const navigate = (nextState: FilterState) => {
     const nextFilters = toTransactionFilters(nextState);
-
     router.replace(
       target === "stats"
         ? buildTransactionStatsUrl(nextFilters)
@@ -147,12 +176,39 @@ export function TransactionFilters({
     );
   };
 
+  const updateFilter = (patch: Partial<FilterState>) => {
+    const nextState = { ...state, ...patch };
+    setState(nextState);
+    navigate(nextState);
+  };
+
+  const updateQuery = (query: string) => {
+    setState((s) => ({ ...s, query }));
+    if (queryTimerRef.current) clearTimeout(queryTimerRef.current);
+    queryTimerRef.current = setTimeout(() => {
+      queryTimerRef.current = null;
+      const nextState = { ...stateRef.current, query };
+      pendingQueryRef.current = query.trim();
+      navigate(nextState);
+    }, 300);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (queryTimerRef.current) clearTimeout(queryTimerRef.current);
+    };
+  }, []);
+
   const resetFilters = () => {
+    if (queryTimerRef.current) clearTimeout(queryTimerRef.current);
+    queryTimerRef.current = null;
+    pendingQueryRef.current = null;
     setState({
       kind: "",
       moneyType: "",
       walletId: "",
       categoryId: "",
+      query: "",
       from: "",
       to: "",
     });
@@ -168,6 +224,7 @@ export function TransactionFilters({
     state.moneyType ||
     state.walletId ||
     state.categoryId ||
+    state.query ||
     state.from ||
     state.to,
   );
@@ -331,6 +388,20 @@ export function TransactionFilters({
           </option>
         ))}
       </Select>
+
+      {!hideSearchInput && (
+        <InputGroup className="w-auto min-w-[200px]">
+          <InputGroupInput
+            type="text"
+            placeholder="Поиск по описанию"
+            value={state.query}
+            onChange={(event) => updateQuery(event.target.value)}
+          />
+          <InputGroupAddon align="inline-end">
+            <SearchIcon className="size-4" />
+          </InputGroupAddon>
+        </InputGroup>
+      )}
 
       <Button
         type="button"

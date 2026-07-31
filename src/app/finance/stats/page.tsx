@@ -74,6 +74,7 @@ export default async function FinanceStatsPage({
           wallets={walletOptions}
           categories={categories}
           target="stats"
+          hideSearchInput={true}
         />
       </div>
       <ExpenseStatsPanel filters={filters} />
