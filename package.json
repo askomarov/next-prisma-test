@@ -16,11 +16,15 @@
     "db:seed": "prisma db seed"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.25",
+    "@ai-sdk/react": "^4.0.47",
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@shadcn/react": "^0.2.1",
     "@tailwindcss/postcss": "^4.3.2",
+    "ai": "^7.0.44",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

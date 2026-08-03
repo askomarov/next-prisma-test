@@ -50,7 +50,7 @@ export function CreateUserForm() {
       <FormField error={errors.name?.message}>
         <Input
           type="text"
-          placeholder="Name"
+          placeholder="Имя"
           error={Boolean(errors.name)}
           {...register("name", {
             onChange: () => clearErrors("name"),
@@ -72,7 +72,7 @@ export function CreateUserForm() {
       <FormField error={errors.password?.message}>
         <Input
           type="password"
-          placeholder="Password"
+          placeholder="Пароль"
           error={Boolean(errors.password)}
           {...register("password", {
             onChange: () => clearErrors("password"),

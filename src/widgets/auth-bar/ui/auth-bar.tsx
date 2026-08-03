@@ -17,7 +17,8 @@ type AuthBarProps = {
 
 export async function AuthBar({ session }: AuthBarProps) {
   const showUsers = canViewUsers(session.role);
-  const navItems = getAuthBarNavItems(showUsers);
+  const showAssistant = Boolean(process.env.OPENAI_API_KEY?.trim());
+  const navItems = getAuthBarNavItems(showUsers, showAssistant);
   const { userId } = await requireAuthUserId();
 
   const [wallets, categories, preferences] = await Promise.all([

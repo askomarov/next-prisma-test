@@ -26,14 +26,14 @@ generator client {
 In `prisma.config.ts`:
 
 ```typescript
-import { defineConfig, env } from 'prisma/config'
+import { defineConfig, env } from "prisma/config";
 
 export default defineConfig({
-  schema: 'prisma/schema.prisma',
+  schema: "prisma/schema.prisma",
   datasource: {
-    url: env('DATABASE_URL'),
+    url: env("DATABASE_URL"),
   },
-})
+});
 ```
 
 ## 3. Environment Variable
@@ -41,7 +41,7 @@ export default defineConfig({
 In `.env`:
 
 ```env
-DATABASE_URL="postgresql://user:password@host:26257/db?sslmode=verify-full"
+DATABASE_URL="postgresql://user:password@host:26257/db?uselibpqcompat=true&sslmode=require"
 ```
 
 Note: CockroachDB uses the PostgreSQL wire protocol, so the URL often looks like postgresql, but the provider **MUST** be `cockroachdb` in the schema to handle specific CRDB features correctly.
@@ -51,18 +51,20 @@ Note: CockroachDB uses the PostgreSQL wire protocol, so the URL often looks like
 Use a driver adapter for the standard SQL workflow. CockroachDB is PostgreSQL-compatible, so use the PostgreSQL adapter.
 
 1. Install adapter and driver:
+
    ```bash
    npm install @prisma/adapter-pg pg
    ```
 
 2. Instantiate Prisma Client with the adapter:
-   ```typescript
-   import 'dotenv/config'
-   import { PrismaClient } from '../generated/client'
-   import { PrismaPg } from '@prisma/adapter-pg'
 
-   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-   const prisma = new PrismaClient({ adapter })
+   ```typescript
+   import "dotenv/config";
+   import { PrismaClient } from "../generated/client";
+   import { PrismaPg } from "@prisma/adapter-pg";
+
+   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+   const prisma = new PrismaClient({ adapter });
    ```
 
 ## ID Generation
@@ -86,4 +88,5 @@ model User {
 ## Common Issues
 
 ### Schema Introspection
+
 Always use `provider = "cockroachdb"` to ensure correct type mapping during `db pull`.
