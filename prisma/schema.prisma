@@ -24,17 +24,18 @@ enum MoneyType {
 }
 
 model User {
-  id           String           @id @default(cuid())
-  email        String           @unique
-  name         String?
-  passwordHash String
-  role         Role             @default(USER)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  transactions Transaction[]
-  wallets      Wallet[]
-  categories   Category[]
-  preferences  UserPreferences?
+  id               String           @id @default(cuid())
+  email            String           @unique
+  name             String?
+  passwordHash     String
+  role             Role             @default(USER)
+  assistantEnabled Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  transactions     Transaction[]
+  wallets          Wallet[]
+  categories       Category[]
+  preferences      UserPreferences?
 }
 
 model Wallet {

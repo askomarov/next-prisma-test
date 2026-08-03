@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getUserCategoryOptions } from "@/entities/category/server";
+import { getUserAssistantEnabled } from "@/entities/user/server";
 import { getUserPreferences } from "@/entities/user-preferences/server";
 import { getUserWalletList } from "@/entities/wallet/server";
 import { logout } from "@/features/auth/login";
@@ -17,15 +18,19 @@ type AuthBarProps = {
 
 export async function AuthBar({ session }: AuthBarProps) {
   const showUsers = canViewUsers(session.role);
-  const showAssistant = Boolean(process.env.OPENAI_API_KEY?.trim());
-  const navItems = getAuthBarNavItems(showUsers, showAssistant);
   const { userId } = await requireAuthUserId();
 
-  const [wallets, categories, preferences] = await Promise.all([
-    getUserWalletList(userId),
-    getUserCategoryOptions(userId),
-    getUserPreferences(userId),
-  ]);
+  const [wallets, categories, preferences, assistantEnabled] =
+    await Promise.all([
+      getUserWalletList(userId),
+      getUserCategoryOptions(userId),
+      getUserPreferences(userId),
+      getUserAssistantEnabled(userId),
+    ]);
+
+  const showAssistant =
+    Boolean(process.env.OPENAI_API_KEY?.trim()) && assistantEnabled;
+  const navItems = getAuthBarNavItems(showUsers, showAssistant);
 
   const walletOptions = wallets.map((wallet) => ({
     id: wallet.id,

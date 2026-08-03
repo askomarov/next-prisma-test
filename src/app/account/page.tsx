@@ -1,17 +1,23 @@
 import { getUserPreferences } from "@/entities/user-preferences/server";
 import { getUserWalletList } from "@/entities/wallet/server";
+import { AssistantAccessForm } from "@/features/user/assistant-access";
+import { getUsersAssistantAccess } from "@/features/user/assistant-access/server";
 import { UserPreferencesForm } from "@/features/user-preferences";
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
 import { Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
+import { Separator } from "@base-ui/react";
 
 export const dynamic = "force-dynamic";
 
 export default async function AccountPage() {
-  const { userId } = await requireAuthUserId();
-  const [wallets, preferences] = await Promise.all([
+  const { session, userId } = await requireAuthUserId();
+  const isSuperAdmin = session.role === "SUPER_ADMIN";
+
+  const [wallets, preferences, assistantUsers] = await Promise.all([
     getUserWalletList(userId),
     getUserPreferences(userId),
+    isSuperAdmin ? getUsersAssistantAccess() : Promise.resolve([]),
   ]);
 
   const walletOptions = wallets.map((wallet) => ({
@@ -40,6 +46,12 @@ export default async function AccountPage() {
           preferences={preferences}
         />
       </Panel>
+
+      {isSuperAdmin ? (
+        <Panel className="mt-4" title="Доступ к ассистенту">
+          <AssistantAccessForm users={assistantUsers} />
+        </Panel>
+      ) : null}
     </PageShell>
   );
 }

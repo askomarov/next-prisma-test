@@ -1,5 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { getUserCategoryOptions } from "@/entities/category/server";
+import { getUserAssistantEnabled } from "@/entities/user/server";
 import { getUserPreferences } from "@/entities/user-preferences/server";
 import { getUserWalletOptions } from "@/entities/wallet/server";
 import {
@@ -41,6 +42,12 @@ export async function POST(request: Request) {
     ({ userId } = await requireAuthUserId());
   } catch {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const assistantEnabled = await getUserAssistantEnabled(userId);
+
+  if (!assistantEnabled) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   if (!process.env.OPENAI_API_KEY) {

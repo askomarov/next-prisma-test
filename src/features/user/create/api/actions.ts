@@ -37,6 +37,7 @@ export async function createUser(
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         passwordHash,
+        assistantEnabled: parsed.data.assistantEnabled,
       },
     });
   } catch {
@@ -44,5 +45,6 @@ export async function createUser(
   }
 
   revalidatePath("/");
+  revalidatePath("/account");
   return { success: true };
 }

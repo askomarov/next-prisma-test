@@ -2,8 +2,9 @@
 
 import { createContext, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Button, FormError, FormField, Input } from "@/shared/ui/button";
+import { Switch } from "@/shared/ui/switch";
 import { createUser } from "../api/actions";
 import { createUserSchema, type CreateUserInput } from "../model/schema";
 import { createUserFormVariants } from "./create-user-form.variants";
@@ -17,13 +18,19 @@ export function CreateUserForm() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     setError,
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      assistantEnabled: false,
+    },
   });
 
   const onSubmit = async (data: CreateUserInput) => {
@@ -78,6 +85,28 @@ export function CreateUserForm() {
             onChange: () => clearErrors("password"),
           })}
         />
+      </FormField>
+
+      <FormField>
+        <div className="flex items-center justify-between gap-3">
+          <label
+            htmlFor="assistantEnabled"
+            className="text-sm text-neutral-600 dark:text-neutral-400"
+          >
+            Доступ к ассистенту
+          </label>
+          <Controller
+            name="assistantEnabled"
+            control={control}
+            render={({ field }) => (
+              <Switch
+                id="assistantEnabled"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </div>
       </FormField>
 
       <Button type="submit" loading={isSubmitting} loadingText="Creating...">

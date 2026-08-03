@@ -9,18 +9,12 @@ import {
   MONEY_TYPE_LABELS,
   TRANSACTION_KIND_LABELS,
 } from "@/entities/transaction";
-import {
-  Button,
-  FormError,
-  FormField,
-  Select,
-} from "@/shared/ui/button";
+import { Button, FormError, FormField, Select } from "@/shared/ui/button";
 import { updateUserPreferences } from "../api/actions";
 import {
   userPreferencesSchema,
   type UserPreferencesInput,
 } from "../model/schema";
-import { userPreferencesFormVariants } from "./user-preferences-form.variants";
 
 type UserPreferencesFormProps = {
   wallets: WalletOption[];
@@ -69,12 +63,9 @@ export function UserPreferencesForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={userPreferencesFormVariants()}
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="grid w-full gap-3">
       <FormField error={errors.defaultWalletId?.message}>
-        <label className="mb-1 block text-sm text-neutral-500">
+        <label className="block text-sm text-neutral-500">
           Кошелёк по умолчанию
         </label>
         <Select
@@ -96,9 +87,7 @@ export function UserPreferencesForm({
       </FormField>
 
       <FormField error={errors.defaultMoneyType?.message}>
-        <label className="mb-1 block text-sm text-neutral-500">
-          Тип денег
-        </label>
+        <label className="block text-sm text-neutral-500">Тип денег</label>
         <Select
           error={Boolean(errors.defaultMoneyType)}
           {...register("defaultMoneyType", {
@@ -118,7 +107,7 @@ export function UserPreferencesForm({
       </FormField>
 
       <FormField error={errors.defaultKind?.message}>
-        <label className="mb-1 block text-sm text-neutral-500">
+        <label className="block text-sm text-neutral-500">
           Тип транзакции (необязательно)
         </label>
         <Select
