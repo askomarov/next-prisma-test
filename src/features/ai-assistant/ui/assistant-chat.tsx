@@ -17,6 +17,7 @@ import {
   MessageScrollerProvider,
   MessageScrollerViewport,
 } from "@/shared/ui/message-scroller";
+import { Textarea } from "@/src/shared/ui/textarea/textarea";
 
 function getTimezone(): string {
   try {
@@ -161,7 +162,7 @@ export function AssistantChat() {
           onSubmit={handleSubmit}
           className="flex items-center gap-2 border-t border-border p-3"
         >
-          <Input
+          <Textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder="Опиши транзакцию…"

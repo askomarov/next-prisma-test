@@ -9,60 +9,48 @@ import type { TransactionInput } from "@/features/transaction/model/schema";
 import { tool, type ToolSet } from "ai";
 import { z } from "zod";
 
-const createTransactionInputSchema = z.object({
-  walletId: z.string().min(1).describe("ID кошелька из списка пользователя"),
-  kind: z.enum(["INCOME", "EXPENSE"]).describe("Тип операции"),
-  moneyType: z
-    .enum(["REAL", "VIRTUAL"])
-    .describe(
-      "REAL = наличные/кэш; VIRTUAL = карта/Apple Pay/Google Pay/онлайн/списание со счёта",
-    ),
-  amount: z.number().positive().describe("Сумма транзакции"),
-  description: z
-    .string()
-    .trim()
-    .max(500)
-    .optional()
-    .nullable()
-    .describe("Краткое описание"),
-  occurredAt: z.string().describe("Дата/время операции в ISO 8601"),
-  categoryId: z
-    .string()
-    .optional()
-    .nullable()
-    .describe("ID категории из списка или null"),
-});
+function optionalIdEnum(ids: string[], description: string) {
+  if (ids.length === 0) {
+    return z.string().optional().nullable().describe(description);
+  }
 
-const getTransactionStatsInputSchema = z.object({
-  kind: z
-    .enum(["INCOME", "EXPENSE"])
-    .describe("INCOME = доходы, EXPENSE = расходы/траты"),
-  categoryId: z
-    .string()
+  return z
+    .union([z.enum(ids as [string, ...string[]]), z.null()])
     .optional()
-    .nullable()
-    .describe("ID категории из списка; null = все категории"),
-  walletId: z
-    .string()
-    .optional()
-    .nullable()
-    .describe("ID кошелька; null = все кошельки"),
-  moneyType: z
-    .enum(["REAL", "VIRTUAL"])
-    .optional()
-    .nullable()
-    .describe("Фильтр типа денег; null = оба"),
-  from: z
-    .string()
-    .optional()
-    .nullable()
-    .describe("Начало периода YYYY-MM-DD включительно"),
-  to: z
-    .string()
-    .optional()
-    .nullable()
-    .describe("Конец периода YYYY-MM-DD включительно"),
-});
+    .describe(description);
+}
+
+function buildCategoryIdSchema(categories: CategoryOption[]) {
+  const mapping = categories
+    .map((category) => `${category.id} = «${category.name}» [${category.kind}]`)
+    .join("\n");
+
+  return optionalIdEnum(
+    categories.map((category) => category.id),
+    `Строго ID из списка ниже (не выдумывай). Для EXPENSE — только [EXPENSE], для INCOME — только [INCOME]. null если нет подходящей.\n${mapping || "(пусто)"}`,
+  );
+}
+
+function buildWalletIdSchema(wallets: WalletOption[]) {
+  const mapping = wallets
+    .map((wallet) => `${wallet.id} = «${wallet.name}» (${wallet.currency})`)
+    .join("\n");
+
+  return z
+    .enum(wallets.map((wallet) => wallet.id) as [string, ...string[]])
+    .describe(`Строго ID кошелька:\n${mapping}`);
+}
+
+function buildOptionalWalletIdSchema(wallets: WalletOption[]) {
+  const mapping = wallets
+    .map((wallet) => `${wallet.id} = «${wallet.name}» (${wallet.currency})`)
+    .join("\n");
+
+  return optionalIdEnum(
+    wallets.map((wallet) => wallet.id),
+    `ID кошелька или null (все):\n${mapping || "(пусто)"}`,
+  );
+}
 
 type CreateAssistantToolsParams = {
   userId: string;
@@ -80,10 +68,57 @@ export function createAssistantTools({
     categories.map((category) => [category.id, category]),
   );
 
+  if (wallets.length === 0) {
+    throw new Error("createAssistantTools requires at least one wallet");
+  }
+
+  const createTransactionInputSchema = z.object({
+    walletId: buildWalletIdSchema(wallets),
+    kind: z.enum(["INCOME", "EXPENSE"]).describe("Тип операции"),
+    moneyType: z
+      .enum(["REAL", "VIRTUAL"])
+      .describe(
+        "REAL = наличные/кэш; VIRTUAL = карта/Apple Pay/Google Pay/онлайн/списание со счёта",
+      ),
+    amount: z.number().positive().describe("Сумма транзакции"),
+    description: z
+      .string()
+      .trim()
+      .max(500)
+      .optional()
+      .nullable()
+      .describe("Краткое описание"),
+    occurredAt: z.string().describe("Дата/время операции в ISO 8601"),
+    categoryId: buildCategoryIdSchema(categories),
+  });
+
+  const getTransactionStatsInputSchema = z.object({
+    kind: z
+      .enum(["INCOME", "EXPENSE"])
+      .describe("INCOME = доходы, EXPENSE = расходы/траты"),
+    categoryId: buildCategoryIdSchema(categories),
+    walletId: buildOptionalWalletIdSchema(wallets),
+    moneyType: z
+      .enum(["REAL", "VIRTUAL"])
+      .optional()
+      .nullable()
+      .describe("Фильтр типа денег; null = оба"),
+    from: z
+      .string()
+      .optional()
+      .nullable()
+      .describe("Начало периода YYYY-MM-DD включительно"),
+    to: z
+      .string()
+      .optional()
+      .nullable()
+      .describe("Конец периода YYYY-MM-DD включительно"),
+  });
+
   return {
     createTransaction: tool({
       description:
-        "Создаёт транзакцию дохода или расхода. Вызывай только когда известна сумма и можно заполнить обязательные поля.",
+        "Создаёт транзакцию дохода или расхода. Вызывай только когда известна сумма и можно заполнить обязательные поля. categoryId бери из enum tool schema по смыслу текста.",
       inputSchema: createTransactionInputSchema,
       execute: async (input) => {
         const occurredAt = new Date(input.occurredAt);
@@ -93,6 +128,24 @@ export function createAssistantTools({
             success: false as const,
             error: "Некорректная дата occurredAt",
           };
+        }
+
+        if (input.categoryId) {
+          const category = categoriesById.get(input.categoryId);
+          if (!category) {
+            return {
+              success: false as const,
+              error: "Категория не найдена",
+              field: "categoryId" as const,
+            };
+          }
+          if (category.kind !== input.kind) {
+            return {
+              success: false as const,
+              error: `Категория «${category.name}» имеет kind=${category.kind}, а транзакция ${input.kind}`,
+              field: "categoryId" as const,
+            };
+          }
         }
 
         const payload: TransactionInput = {
