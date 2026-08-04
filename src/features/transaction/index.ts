@@ -1,5 +1,10 @@
-export { createTransaction, updateTransaction } from "./api/actions";
+export {
+  createTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "./api/actions";
 export { CreateTransactionDialog } from "./ui/create-transaction-dialog";
+export { DeleteTransactionButton } from "./ui/delete-transaction-button";
 export { TransactionForm, TransactionFormSuccessContext } from "./ui/transaction-form";
 export type { TransactionFormValues } from "./ui/transaction-form";
 export type { TransactionInput } from "./model/schema";

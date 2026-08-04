@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Button, FormError, FormField, Input } from "@/shared/ui/button";
-import { Switch } from "@/shared/ui/switch";
+import { Switch } from "@/src/shared/ui/switch/switch";
 import { createUser } from "../api/actions";
 import { createUserSchema, type CreateUserInput } from "../model/schema";
 import { createUserFormVariants } from "./create-user-form.variants";

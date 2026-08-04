@@ -4,7 +4,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Button, FormError } from "@/shared/ui/button";
-import { Switch } from "@/shared/ui/switch";
+import { Switch } from "@/src/shared/ui/switch/switch";
 import { updateUsersAssistantAccess } from "../api/actions";
 import type { UserAssistantAccess } from "../model/types";
 import {

@@ -6,6 +6,7 @@ import {
   MONEY_TYPE_LABELS,
   TRANSACTION_KIND_LABELS,
 } from "@/entities/transaction";
+import { DeleteTransactionButton } from "@/features/transaction";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { PenSquareIcon } from "lucide-react";
@@ -76,16 +77,22 @@ export function TransactionListItem({
             {formatDate(transaction.occurredAt)}
           </time>
         </div>
-        <Button
-          type="button"
-          className="w-auto"
-          aria-pressed={isEditing}
-          onClick={() =>
-            editContext?.setEditingTransactionId(transaction.id)
-          }
-        >
-          <PenSquareIcon />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            className="w-auto"
+            aria-pressed={isEditing}
+            onClick={() =>
+              editContext?.setEditingTransactionId(transaction.id)
+            }
+          >
+            <PenSquareIcon />
+          </Button>
+          <DeleteTransactionButton
+            transactionId={transaction.id}
+            label={transaction.description ?? undefined}
+          />
+        </div>
       </div>
     </li>
   );
