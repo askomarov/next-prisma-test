@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Button, FormError, FormField, Input } from "@/shared/ui/button";
 import {
   InputGroup,
@@ -23,14 +23,17 @@ export function LoginForm() {
     handleSubmit,
     setError,
     clearErrors,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const [email, password] = watch(["email", "password"]);
+  const [email, password] = useWatch({
+    control,
+    name: ["email", "password"],
+  });
   const canSubmit = Boolean(email.trim() && password.trim());
 
   const onSubmit = async (data: LoginInput) => {

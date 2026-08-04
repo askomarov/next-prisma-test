@@ -134,16 +134,37 @@ export function TransactionFilters({
   const [state, setState] = useState<FilterState>(() => toFilterState(filters));
 
   const stateRef = useRef(state);
-  stateRef.current = state;
   const queryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    stateRef.current = state;
+  });
   /** Trimmed query we committed to URL; keep local input until searchParams catch up. */
   const pendingQueryRef = useRef<string | null>(null);
 
-  useEffect(() => {
-    setState((prev) => {
-      const next = toFilterState(filters);
-      const urlQuery = (filters.query ?? "").trim();
+  const {
+    kind: filterKind,
+    moneyType: filterMoneyType,
+    walletId: filterWalletId,
+    categoryId: filterCategoryId,
+    query: filterQuery,
+    from: filterFrom,
+    to: filterTo,
+  } = filters;
 
+  useEffect(() => {
+    const next = toFilterState({
+      kind: filterKind,
+      moneyType: filterMoneyType,
+      walletId: filterWalletId,
+      categoryId: filterCategoryId,
+      query: filterQuery,
+      from: filterFrom,
+      to: filterTo,
+    });
+    const urlQuery = (filterQuery ?? "").trim();
+
+    setState((prev) => {
       if (queryTimerRef.current || pendingQueryRef.current !== null) {
         if (
           pendingQueryRef.current !== null &&
@@ -158,13 +179,13 @@ export function TransactionFilters({
       return next;
     });
   }, [
-    filters.kind,
-    filters.moneyType,
-    filters.walletId,
-    filters.categoryId,
-    filters.query,
-    filters.from,
-    filters.to,
+    filterKind,
+    filterMoneyType,
+    filterWalletId,
+    filterCategoryId,
+    filterQuery,
+    filterFrom,
+    filterTo,
   ]);
 
   const navigate = (nextState: FilterState) => {

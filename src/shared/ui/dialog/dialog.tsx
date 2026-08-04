@@ -49,19 +49,10 @@ export function Dialog({
   const open = isControlled ? openContext.open : internalOpen;
   const setOpen = isControlled ? openContext.setOpen : setInternalOpen;
 
-  const close = () => {
-    dialogRef.current?.close();
-    setOpen(false);
-  };
-
-  const openDialog = () => {
-    dialogRef.current?.showModal();
-    setOpen(true);
-  };
+  const close = () => setOpen(false);
+  const openDialog = () => setOpen(true);
 
   useEffect(() => {
-    if (!isControlled) return;
-
     const dialog = dialogRef.current;
     if (!dialog) return;
 
@@ -70,7 +61,7 @@ export function Dialog({
     } else if (!open && dialog.open) {
       dialog.close();
     }
-  }, [isControlled, open]);
+  }, [open]);
 
   const handleDialogClose = () => {
     onClose?.();

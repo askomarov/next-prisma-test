@@ -12,10 +12,12 @@ type UserSearchProps = {
 export function UserSearch({ defaultValue }: UserSearchProps) {
   const router = useRouter();
   const [value, setValue] = useState(defaultValue);
+  const [prevDefaultValue, setPrevDefaultValue] = useState(defaultValue);
 
-  useEffect(() => {
+  if (defaultValue !== prevDefaultValue) {
+    setPrevDefaultValue(defaultValue);
     setValue(defaultValue);
-  }, [defaultValue]);
+  }
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {

@@ -2,7 +2,7 @@
 
 import { MonitorIcon, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "../button";
@@ -12,6 +12,10 @@ const THEME_OPTIONS = [
   { value: "dark", label: "Тёмная", icon: <Moon /> },
   { value: "system", label: "Автоматическая", icon: <MonitorIcon /> },
 ] as const;
+
+const emptySubscribe = () => () => {};
+const useIsClient = () =>
+  useSyncExternalStore(emptySubscribe, () => true, () => false);
 
 type ThemeToggleProps = {
   variant?: "default" | "expanded";
@@ -23,11 +27,7 @@ export function ThemeToggle({
   className,
 }: ThemeToggleProps) {
   const { theme, resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useIsClient();
 
   if (!mounted) {
     if (variant === "expanded") {

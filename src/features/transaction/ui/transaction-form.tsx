@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, type ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import type { CategoryOption } from "@/entities/category";
 import type { WalletOption } from "@/entities/wallet";
 import { formatMoney } from "@/entities/wallet";
@@ -76,7 +76,6 @@ export function TransactionForm({
     control,
     handleSubmit,
     reset,
-    watch,
     setValue,
     setError,
     clearErrors,
@@ -86,9 +85,10 @@ export function TransactionForm({
     defaultValues: resolvedDefaults,
   });
 
-  const selectedWalletId = watch("walletId");
-  const selectedKind = watch("kind");
-  const selectedCategoryId = watch("categoryId");
+  const [selectedWalletId, selectedKind, selectedCategoryId] = useWatch({
+    control,
+    name: ["walletId", "kind", "categoryId"],
+  });
 
   const selectedWallet = useMemo(
     () => wallets.find((wallet) => wallet.id === selectedWalletId),

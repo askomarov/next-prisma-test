@@ -6,7 +6,6 @@ import { UserPreferencesForm } from "@/features/user-preferences";
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
 import { Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
-import { Separator } from "@base-ui/react";
 
 export const dynamic = "force-dynamic";
 

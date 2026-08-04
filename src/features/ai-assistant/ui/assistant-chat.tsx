@@ -6,7 +6,6 @@ import { useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
 
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
 import { Bubble, BubbleContent } from "@/shared/ui/bubble";
 import { Message, MessageContent, MessageFooter } from "@/shared/ui/message";
 import {
