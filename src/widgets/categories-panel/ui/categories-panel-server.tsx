@@ -2,7 +2,7 @@ import type { CategoryListItem } from "@/entities/category";
 import { getUserCategoryList } from "@/entities/category/server";
 import { EmptyState, Panel } from "@/shared/ui/panel";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
-import { CategoriesList } from "./categories-panel";
+import { CategoriesDataTable } from "./categories-data-table";
 
 type CategoriesPanelProps = {
   categories?: CategoryListItem[];
@@ -22,7 +22,7 @@ export async function CategoriesPanel({
           дефолтного набора.
         </EmptyState>
       ) : (
-        <CategoriesList categories={categories} />
+        <CategoriesDataTable data={categories} />
       )}
     </Panel>
   );

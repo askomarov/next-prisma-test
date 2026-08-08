@@ -11,14 +11,14 @@ export default async function CategoriesPage() {
   const categories = await getUserCategoryList(userId);
 
   return (
-    <PageShell>
+    <PageShell className="max-w-7xl">
       <PageHero
         eyebrow="Финансы"
         title="Категории"
         lede="Группируйте транзакции: продукты, транспорт, зарплата и свои категории."
         className="sm:grid sm:gap-x-10"
       >
-        <CreateCategoryDialog className="sm:col-start-2 sm:row-span-3 sm:row-start-1 sm:self-start" />
+        <CreateCategoryDialog className="sm:col-start-2 sm:row-span-3 sm:row-start-1 sm:self-start ml-auto" />
       </PageHero>
 
       <CategoriesPanel categories={categories} />

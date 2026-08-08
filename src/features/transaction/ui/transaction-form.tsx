@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, type ChangeEvent } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  type ChangeEvent,
+} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import type { CategoryOption } from "@/entities/category";
@@ -23,7 +29,6 @@ import {
 } from "@/shared/ui/button";
 import { createTransaction, updateTransaction } from "../api/actions";
 import { transactionSchema, type TransactionInput } from "../model/schema";
-import { transactionFormVariants } from "./transaction-form.variants";
 
 export type TransactionFormValues = TransactionInput;
 
@@ -135,10 +140,7 @@ export function TransactionForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={transactionFormVariants()}
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 items-start">
       <FormField error={errors.walletId?.message}>
         <Select
           error={Boolean(errors.walletId)}

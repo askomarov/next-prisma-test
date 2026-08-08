@@ -15,7 +15,7 @@ export function EditCategoryDialog({ category }: EditCategoryDialogProps) {
   return (
     <Dialog
       trigger={
-        <Button type="button" className="w-auto">
+        <Button type="button" variant="outline" className="w-auto">
           <PenSquareIcon />
         </Button>
       }
