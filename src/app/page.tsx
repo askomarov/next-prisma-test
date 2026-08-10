@@ -35,13 +35,11 @@ export default async function Home({ searchParams }: HomeProps) {
           </>
         }
       />
-
       {showCreateForms ? (
         <div className="mb-4">
           <CreateUserDialog />
         </div>
       ) : null}
-
       <UsersTable page={page} search={search} />
     </PageShell>
   );

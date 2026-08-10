@@ -5,6 +5,7 @@ import "./globals.css";
 import { IBM_Plex_Sans, Noto_Sans } from "next/font/google";
 import { cn } from "@/shared/lib/utils";
 import { ThemeProvider } from "@/shared/providers/theme-provider.tsx";
+import { Analytics } from "@vercel/analytics/next";
 
 const notoSansHeading = Noto_Sans({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default async function RootLayout({
           {session ? <AuthBar session={session} /> : null}
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

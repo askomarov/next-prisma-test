@@ -25,6 +25,7 @@
     "@shadcn/react": "^0.2.1",
     "@tailwindcss/postcss": "^4.3.2",
     "@tanstack/react-table": "^9.0.1",
+    "@vercel/analytics": "^2.0.1",
     "ai": "^7.0.44",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
