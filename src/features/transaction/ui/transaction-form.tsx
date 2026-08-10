@@ -32,6 +32,10 @@ import { transactionSchema, type TransactionInput } from "../model/schema";
 
 export type TransactionFormValues = TransactionInput;
 
+export type TransactionFormSubmitResult =
+  | { success: true }
+  | { error: string; field?: keyof TransactionFormValues };
+
 export const TransactionFormSuccessContext = createContext<(() => void) | null>(
   null,
 );
@@ -43,6 +47,13 @@ type TransactionFormProps = {
   mode?: "create" | "edit";
   transactionId?: string;
   defaultValues?: TransactionFormValues;
+  onSubmit?: (
+    data: TransactionFormValues,
+  ) => Promise<TransactionFormSubmitResult | void>;
+  onCancel?: () => void;
+  submitLabel?: string;
+  cancelLabel?: string;
+  resetOnSuccess?: boolean;
 };
 
 function formatDateInputValue(date: Date): string {
@@ -70,9 +81,15 @@ export function TransactionForm({
   mode = "create",
   transactionId,
   defaultValues,
+  onSubmit: onSubmitProp,
+  onCancel,
+  submitLabel,
+  cancelLabel = "Отклонить",
+  resetOnSuccess,
 }: TransactionFormProps) {
   const onSuccess = useContext(TransactionFormSuccessContext);
   const isEdit = mode === "edit";
+  const shouldResetOnSuccess = resetOnSuccess ?? !isEdit;
   const resolvedDefaults =
     defaultValues ?? resolveCreateDefaults(wallets, preferences);
 
@@ -117,9 +134,15 @@ export function TransactionForm({
   }, [availableCategories, selectedCategoryId, setValue]);
 
   const onSubmit = async (data: TransactionFormValues) => {
-    const result = isEdit
-      ? await updateTransaction(transactionId!, data)
-      : await createTransaction(data);
+    const result = onSubmitProp
+      ? await onSubmitProp(data)
+      : isEdit
+        ? await updateTransaction(transactionId!, data)
+        : await createTransaction(data);
+
+    if (!result) {
+      return;
+    }
 
     if ("error" in result) {
       if (result.field) {
@@ -130,12 +153,9 @@ export function TransactionForm({
       return;
     }
 
-    if (isEdit) {
-      onSuccess?.();
-      return;
+    if (shouldResetOnSuccess) {
+      reset(resolveCreateDefaults(wallets, preferences));
     }
-
-    reset(resolveCreateDefaults(wallets, preferences));
     onSuccess?.();
   };
 
@@ -261,9 +281,21 @@ export function TransactionForm({
         />
       </FormField>
 
-      <Button type="submit" loading={isSubmitting} loadingText="Сохранение...">
-        {isEdit ? "Сохранить" : "Добавить"}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="submit" loading={isSubmitting} loadingText="Сохранение...">
+          {submitLabel ?? (isEdit ? "Сохранить" : "Добавить")}
+        </Button>
+        {onCancel ? (
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isSubmitting}
+            onClick={onCancel}
+          >
+            {cancelLabel}
+          </Button>
+        ) : null}
+      </div>
 
       <FormError message={errors.root?.message} />
     </form>

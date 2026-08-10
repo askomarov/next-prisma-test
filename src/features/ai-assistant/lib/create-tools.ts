@@ -4,8 +4,6 @@ import type { CategoryOption } from "@/entities/category";
 import type { TransactionFilters } from "@/entities/transaction";
 import { getTransactionStats } from "@/entities/transaction/server";
 import type { WalletOption } from "@/entities/wallet";
-import { saveTransaction } from "@/features/transaction/api/save-transaction";
-import type { TransactionInput } from "@/features/transaction/model/schema";
 import { tool, type ToolSet } from "ai";
 import { z } from "zod";
 
@@ -116,75 +114,12 @@ export function createAssistantTools({
   });
 
   return {
+    // Client-side tool: UI shows editable preview, user confirms/rejects,
+    // then addToolOutput provides the result. No server execute.
     createTransaction: tool({
       description:
-        "Создаёт транзакцию дохода или расхода. Вызывай только когда известна сумма и можно заполнить обязательные поля. categoryId бери из enum tool schema по смыслу текста.",
+        "Предлагает транзакцию дохода или расхода на подтверждение пользователю. Не создаёт запись сама — пользователь правит поля и подтверждает или отклоняет в UI. Вызывай когда известна сумма и можно заполнить обязательные поля. categoryId бери из enum tool schema по смыслу текста.",
       inputSchema: createTransactionInputSchema,
-      execute: async (input) => {
-        const occurredAt = new Date(input.occurredAt);
-
-        if (Number.isNaN(occurredAt.getTime())) {
-          return {
-            success: false as const,
-            error: "Некорректная дата occurredAt",
-          };
-        }
-
-        if (input.categoryId) {
-          const category = categoriesById.get(input.categoryId);
-          if (!category) {
-            return {
-              success: false as const,
-              error: "Категория не найдена",
-              field: "categoryId" as const,
-            };
-          }
-          if (category.kind !== input.kind) {
-            return {
-              success: false as const,
-              error: `Категория «${category.name}» имеет kind=${category.kind}, а транзакция ${input.kind}`,
-              field: "categoryId" as const,
-            };
-          }
-        }
-
-        const payload: TransactionInput = {
-          walletId: input.walletId,
-          kind: input.kind,
-          moneyType: input.moneyType,
-          amount: input.amount,
-          description: input.description ?? "",
-          occurredAt,
-          categoryId: input.categoryId ?? "",
-        };
-
-        const result = await saveTransaction(userId, payload);
-
-        if ("error" in result) {
-          return {
-            success: false as const,
-            error: result.error,
-            field: result.field,
-          };
-        }
-
-        const wallet = walletsById.get(input.walletId);
-        const category = input.categoryId
-          ? categoriesById.get(input.categoryId)
-          : undefined;
-
-        return {
-          success: true as const,
-          kind: input.kind,
-          moneyType: input.moneyType,
-          amount: input.amount,
-          currency: wallet?.currency ?? null,
-          walletName: wallet?.name ?? null,
-          categoryName: category?.name ?? null,
-          description: input.description || null,
-          occurredAt: occurredAt.toISOString(),
-        };
-      },
     }),
 
     getTransactionStats: tool({
@@ -254,3 +189,4 @@ export function createAssistantTools({
 }
 
 export type AssistantTools = ReturnType<typeof createAssistantTools>;
+

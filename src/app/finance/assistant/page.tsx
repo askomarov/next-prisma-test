@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
+import { getUserCategoryOptions } from "@/entities/category/server";
 import { getUserAssistantEnabled } from "@/entities/user/server";
+import { getUserPreferences } from "@/entities/user-preferences/server";
+import { getUserWalletOptions } from "@/entities/wallet/server";
 import { AssistantChat } from "@/features/ai-assistant";
 import { PageHero, PageShell } from "@/shared/ui/page-shell";
 import { requireAuthUserId } from "@/src/lib/auth/guards";
@@ -14,6 +17,12 @@ export default async function AssistantPage() {
     redirect("/finance");
   }
 
+  const [wallets, categories, preferences] = await Promise.all([
+    getUserWalletOptions(userId),
+    getUserCategoryOptions(userId),
+    getUserPreferences(userId),
+  ]);
+
   return (
     <PageShell className="max-w-3xl">
       <PageHero
@@ -21,7 +30,11 @@ export default async function AssistantPage() {
         title="Ассистент"
         lede="Создавай транзакции использая ИИ помощника"
       />
-      <AssistantChat />
+      <AssistantChat
+        wallets={wallets}
+        categories={categories}
+        preferences={preferences}
+      />
     </PageShell>
   );
 }

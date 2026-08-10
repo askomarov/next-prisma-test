@@ -1,10 +1,17 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, isToolUIPart } from "ai";
+import {
+  DefaultChatTransport,
+  isToolUIPart,
+  lastAssistantMessageIsCompleteWithToolCalls,
+} from "ai";
 import { useMemo, useState } from "react";
 import { SendIcon } from "lucide-react";
 
+import type { CategoryOption } from "@/entities/category";
+import type { UserPreferences } from "@/entities/user-preferences";
+import type { WalletOption } from "@/entities/wallet";
 import { Button } from "@/shared/ui/button";
 import { Bubble, BubbleContent } from "@/shared/ui/bubble";
 import { Message, MessageContent, MessageFooter } from "@/shared/ui/message";
@@ -18,6 +25,12 @@ import {
 } from "@/shared/ui/message-scroller";
 import { Textarea } from "@/src/shared/ui/textarea/textarea";
 
+import type {
+  CreateTransactionToolInput,
+  CreateTransactionToolOutput,
+} from "../model/types";
+import { TransactionPreviewCard } from "./transaction-preview-card";
+
 function getTimezone(): string {
   try {
     return (
@@ -28,7 +41,49 @@ function getTimezone(): string {
   }
 }
 
-export function AssistantChat() {
+function isCreateTransactionInput(
+  value: unknown,
+): value is CreateTransactionToolInput {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const input = value as Record<string, unknown>;
+  return (
+    typeof input.walletId === "string" &&
+    (input.kind === "INCOME" || input.kind === "EXPENSE") &&
+    (input.moneyType === "REAL" || input.moneyType === "VIRTUAL") &&
+    typeof input.amount === "number" &&
+    typeof input.occurredAt === "string"
+  );
+}
+
+function getCreateTransactionOutputLabel(output: unknown): string {
+  if (!output || typeof output !== "object") {
+    return "Транзакция обработана";
+  }
+
+  const result = output as CreateTransactionToolOutput;
+  if (result.success) {
+    return "Транзакция создана";
+  }
+  if (result.cancelled) {
+    return "Создание отменено";
+  }
+  return result.error ? `Ошибка: ${result.error}` : "Ошибка создания";
+}
+
+type AssistantChatProps = {
+  wallets: WalletOption[];
+  categories: CategoryOption[];
+  preferences?: UserPreferences;
+};
+
+export function AssistantChat({
+  wallets,
+  categories,
+  preferences,
+}: AssistantChatProps) {
   const [input, setInput] = useState("");
   const transport = useMemo(
     () =>
@@ -41,8 +96,20 @@ export function AssistantChat() {
     [],
   );
 
-  const { messages, sendMessage, status, error } = useChat({ transport });
-  const isBusy = status === "submitted" || status === "streaming";
+  const { messages, sendMessage, addToolOutput, status, error } = useChat({
+    transport,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+  });
+
+  const isStreaming = status === "submitted" || status === "streaming";
+  const hasPendingCreatePreview = messages.some((message) =>
+    message.parts.some(
+      (part) =>
+        part.type === "tool-createTransaction" &&
+        part.state === "input-available",
+    ),
+  );
+  const isBusy = isStreaming || hasPendingCreatePreview;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -100,8 +167,72 @@ export function AssistantChat() {
                           )}
 
                           {toolParts.length > 0 ? (
-                            <MessageFooter>
+                            <MessageFooter className="flex flex-col items-stretch gap-3">
                               {toolParts.map((part, partIndex) => {
+                                const key = `${message.id}-tool-${partIndex}`;
+
+                                if (part.type === "tool-createTransaction") {
+                                  if (part.state === "input-streaming") {
+                                    return (
+                                      <span
+                                        key={key}
+                                        className="text-xs text-muted-foreground"
+                                      >
+                                        Готовлю превью…
+                                      </span>
+                                    );
+                                  }
+
+                                  if (
+                                    part.state === "input-available" &&
+                                    isCreateTransactionInput(part.input)
+                                  ) {
+                                    return (
+                                      <TransactionPreviewCard
+                                        key={key}
+                                        input={part.input}
+                                        wallets={wallets}
+                                        categories={categories}
+                                        preferences={preferences}
+                                        onResolved={(output) => {
+                                          // No await — avoid potential deadlocks with useChat
+                                          void addToolOutput({
+                                            tool: "createTransaction",
+                                            toolCallId: part.toolCallId,
+                                            output,
+                                          });
+                                        }}
+                                      />
+                                    );
+                                  }
+
+                                  if (part.state === "output-available") {
+                                    return (
+                                      <span
+                                        key={key}
+                                        className="text-xs text-muted-foreground"
+                                      >
+                                        {getCreateTransactionOutputLabel(
+                                          part.output,
+                                        )}
+                                      </span>
+                                    );
+                                  }
+
+                                  if (part.state === "output-error") {
+                                    return (
+                                      <span
+                                        key={key}
+                                        className="text-xs text-destructive"
+                                      >
+                                        Ошибка tool
+                                      </span>
+                                    );
+                                  }
+
+                                  return null;
+                                }
+
                                 const state =
                                   "state" in part
                                     ? String(part.state)
@@ -116,22 +247,20 @@ export function AssistantChat() {
                                 const actionLabel =
                                   toolName === "getTransactionStats"
                                     ? "Считаю статистику"
-                                    : toolName === "createTransaction"
-                                      ? "Создаю транзакцию"
-                                      : "Выполняю tool";
+                                    : "Выполняю tool";
 
                                 const label =
                                   state === "output-available"
                                     ? toolName === "getTransactionStats"
                                       ? "Статистика готова"
-                                      : "Транзакция обработана"
+                                      : "Tool выполнен"
                                     : state === "output-error"
                                       ? "Ошибка tool"
                                       : `${actionLabel}…`;
 
                                 return (
                                   <span
-                                    key={`${message.id}-tool-${partIndex}`}
+                                    key={key}
                                     className="text-xs text-muted-foreground"
                                   >
                                     {label}
@@ -164,7 +293,11 @@ export function AssistantChat() {
           <Textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Опиши транзакцию…"
+            placeholder={
+              hasPendingCreatePreview
+                ? "Сначала подтверди или отклони превью…"
+                : "Опиши транзакцию…"
+            }
             disabled={isBusy}
             className="flex-1"
             autoComplete="off"
